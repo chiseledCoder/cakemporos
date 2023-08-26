@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block extracss %}
+<style type="text/css">
+	
+#Container .mix{
+	display: none;
+}
+</style>
+{% endblock %}
+    {% block content %}
+    <div class="container-fluid">
+    	<div class="row">
+			    	<div class="col-md-12 filterBox">
+			    		<div class="controls">
+					  <label>Filter:</label>
+					  <button class="filter btn btn-primary" data-filter="all">All</button>
+					  <button class="filter btn btn-primary" data-filter=".cake">Cakes</button>
+					  <button class="filter btn btn-primary" data-filter=".rolls">Rolls</button>
+					  <label>Sort:</label>
+					  <button class="sort btn btn-primary" data-sort="myorder:asc">Low To High</button>
+					  <button class="sort btn btn-primary" data-sort="myorder:desc">High To Low</button>
+					</div>
+			    	</div>
+			    </div>
+    </div>
+    <section class="results big-padding" id="results">
+       	<div id="Container" class="container">
+       			<div class="small-padding"></div>
+       	  		<div class="row small-padding">
+       			{% for item in product_cakes %}
+       			<div class="col-md-4 productBox mix {{ item.category|lower }}" data-myorder="{{ item.price|floatformat }}">
+       				<div class="productBoxImage">
+       					<img src="/media/{{ MEDIA_URL }}{{ item.image }}">
+       				</div>
+       				<div class="productBoxDetails">
+       					<div class="row">
+       						<div class="col-sm-8">
+       					<h4><a href="{{ item.get_absolute_url }}">{{ item }} </a></h4>
+       					</div>
+       					<div class="col-sm-4 tiny-padding right-aligned">
+       						<p>&#8377; {{ item.price }}</p>
+       					</div>
+       					</div>
+       					<div class="row">
+       						<div class="col-sm-8">
+       							<p>{{ item.shop_address }}</p>
+       						</div>
+       						<div class="col-sm-4">
+       							<a href="{{ item.get_absolute_url }}" class="btn btn-primary pull-right">View</a>
+       						</div>
+       					</div>
+       				</div>
+       			</div>
+       			{% endfor %}
+       			<!-- Cupcakes -->
+
+       			{% for item in product_rolls %}
+       			<div class="col-md-4 productBox mix {{ item.category|lower }}" data-myorder="{{ item.price }}">
+       				<div class="productBoxImage">
+       					<img src="/media/{{ MEDIA_URL }}{{ item.image }}">
+       				</div>
+       				<div class="productBoxDetails">
+       					<div class="row">
+       						<div class="col-sm-8">
+       					<h4><a href="{{ item.get_absolute_url }}">{{ item }} </a></h4>
+       					</div>
+       					<div class="col-sm-4 tiny-padding right-aligned">
+       						<p>&#8377; {{ item.price }}</p>
+       					</div>
+       					</div>
+       					<div class="row">
+       						<div class="col-sm-8">
+       							<p>{{ item.shop_address }}</p>{{ item.category }}
+       						</div>
+       						<div class="col-sm-4">
+       							<a href="{{ item.get_absolute_url }}" class="btn btn-primary pull-right">View</a>
+       						</div>
+       					</div>
+       				</div>
+       			</div>
+       			{% endfor %}
+
+
+       		</div>
+       	</div>
+    </section>
+{% endblock %}
+{% block extrajs %}
+<script type="text/javascript">
+	$( document ).ready(function() {
+		$('#Container').mixItUp();
+});
+</script>
+{% endblock %}

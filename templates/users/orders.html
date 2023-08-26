@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">	
+<h1>Past Orders</h1>
+
+
+	<div class="col-md-12">
+			{% for object in order_histroy %}
+			<div class="panel panel-primary">
+				<div class="panel-heading">
+					<h3 class="panel-title"><a href="#" class="btn btn-primary">{{ object.order_id }}</a><span class="pull-right">{{ object.timestamp }}</span></h3>
+				</div>
+				<div class="panel-body">
+						<table class="table table-bordered">
+							<thead>
+								<tr>
+									<th>
+										Product Image
+									</th>
+									<th>
+										Product Name
+									</th>
+									<th>
+										Baker Name
+									</th>
+									<th>
+										Quantity
+									</th>
+									<th>
+										Other Details
+									</th>
+									<th>
+										Order Status
+									</th>
+								</tr>
+							</thead>
+							<tbody>
+							{% for items in object.cart.cartitem_set.all %}
+								<tr>
+									<td>
+										<img src="/media/{{ MEDIA_URL }}{{ items.product.image }}" height="100" width="100">
+									</td>
+									<td>
+									
+										{{ items.product }}
+									</td>
+									<td>
+										{{ items.product.baker }}
+									</td>
+									<td>
+										{{ items.quantity }}
+									</td>
+									<td><b>Egg Or Eggless:</b> {{ items.egg }}<br>
+				                        <b>Weight:</b> {{ items.weight }}<br>
+				                        <b>Message on Cake:</b> {{ items.msg_on_cake }}<br>
+				                        <b>Delivery Date: </b> {{ items.delivery_date }}<br>
+                  						<b>Delivery Time: </b> {{ items.delivery_time }}<br>
+				                    </td>
+				                    <td>
+				                    	{% if object.status == "Pending" %}
+		                                <span class="label label-default">{{ object.status }}</span>
+		                              {% elif object.status == "Processing" %}
+		                                <span class="label label-warning">{{ object.status }}</span>
+		                              {% elif object.status == "Processed" %}
+		                                <span class="label label-success">{{ object.status }}</span>
+		                              {% elif object.status == "Shipping" %}
+		                                <span class="label label-info">{{ object.status }}</span>
+		                              {% elif object.status == "Complete" %}
+		                                <span class="label label-primary">{{ object.status }}</span>
+		                              {% elif object.status == "Canceled" %}
+		                                <span class="label label-danger">{{ object.status }}</span>
+		                              {% endif %}
+				                    </td>
+								</tr>
+							{% endfor %}
+							</tbody>
+						</table>
+				</div>
+				
+			</div>
+
+		{% endfor %}
+		</div>
+	</div>
+</div>
+{% endblock %}
+<!-- 7718844500 -->

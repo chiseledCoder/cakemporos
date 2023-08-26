@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block content %}
+	<div class="wrapper" id="offers">
+    	<div id="main-content">
+    		<div class="container">
+    			<section>
+	    			<div class="page-title text-center">
+	    				<h3 class="text-cakemporos"><span>S</span>pecial <span>O</span>ffers</h3>	
+	    			</div>
+	    		</section>
+	    		{% if offers %}
+	    		<section class="small-padding">
+	    			<div class="row">
+	    				{% for item in offers %}
+	    					<div class="col-md-6 col-sm-12 col-xs-12">
+	    						<div class="box offers-box">
+	    							<div class="offer-image">
+	    								<img src="{{ item.image.url }}" alt="item.title" class="img-responsive">
+	    							</div>
+	    							<div class="offer-desc">
+	    								<h4>{{ item.title|title }}</h4>
+	    								<p>{{ item.description }}</p>
+	    								{% if item.coupon_code %}
+	    								<p><b>Code:</b>&nbsp;{{ item.coupon_code }}</p>
+	    								{% endif %}
+	    							</div>
+
+	    						</div>
+	    					</div>
+	    				{% endfor %}
+	    			</div>
+	    		</section>
+	    		{% else %}
+	    		<section>
+	    			<div class="text-center small-padding">
+	    				<h5>No more offers currently!</h5>
+	    				<a href="{% url 'userindex' %}" class="btn btn-cakemporos">Continue Shopping</a>
+	    			</div>
+	    		</section>	    		
+	    		{% endif %}
+    		</div>
+    	</div>
+    </div>
+{% endblock %}

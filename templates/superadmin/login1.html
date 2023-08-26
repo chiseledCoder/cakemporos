@@ -1,0 +1,8 @@
+<form method='POST' action=''>{% csrf_token %}
+      {% if redirect_field_value %}
+          <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+          {% endif %}
+        {{ form.as_p }}
+
+          <input type="submit" class="btn btn-froly btn-block btn-flat" value="Sign In">
+    </form>

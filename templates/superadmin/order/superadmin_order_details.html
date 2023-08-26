@@ -1,0 +1,612 @@
+{% extends 'superadmin/superadmin_base.html' %}
+{% load staticfiles %}
+
+{% block extracss %}
+<link href="{% static 'superadmin/global/plugins/datatables/datatables.min.css' %}" rel="stylesheet" type="text/css" />
+<link href="{% static 'superadmin/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.css' %}" rel="stylesheet" type="text/css" />
+<link href="{% static 'superadmin/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css' %}" rel="stylesheet" type="text/css" />
+<link href="{% static 'superadmin/global/plugins/fancybox/source/jquery.fancybox.css' %}" rel="stylesheet" type="text/css" />
+<link href="../assets/global/plugins/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+{% block content %}
+<!-- BEGIN CONTENT -->
+                <div class="page-content-wrapper">
+                    <!-- BEGIN CONTENT BODY -->
+                    <div class="page-content">
+                        <!-- BEGIN PAGE HEADER-->
+                        <!-- BEGIN PAGE BAR -->
+                        <div class="page-bar">
+                            <ul class="page-breadcrumb">
+                                <li>
+                                    <a href="index.html">Home</a>
+                                    <i class="fa fa-circle"></i>
+                                </li>
+                                <li>
+                                    <a href="index.html">Orders List</a>
+                                    <i class="fa fa-circle"></i>
+                                </li>
+                                <li>
+                                    <span>Order Details: {{ get_main_order }}</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <!-- END PAGE BAR -->
+                        <!-- BEGIN PAGE TITLE-->
+                        <h1 class="page-title"> eCommerce Order View
+                            <small>view order details</small>
+                        </h1>
+                        <!-- END PAGE TITLE-->
+                        <!-- END PAGE HEADER-->
+                        <div class="row">
+                            <div class="col-md-12">
+                                <!-- Begin: life time stats -->
+                                <div class="portlet light portlet-fit portlet-datatable bordered">
+                                    <div class="portlet-title">
+                                        <div class="caption">
+                                            <i class="icon-settings font-dark"></i>
+                                            <span class="caption-subject font-dark sbold uppercase"> Order #{{ get_main_order }}
+                                                <span class="hidden-xs">| {{ get_main_order.timestamp|date:"D d M Y" }} {{ get_main_order.timestamp|time:"H:i" }} </span>
+                                            </span>
+                                        </div>
+                                        <div class="btn-group btn-group btn-group-devided pull-right">
+                                            <a href="{% url 'superadmin_order_update' get_main_order %}" class="btn btn-transparent green btn-outline btn-circle btn-sm">Update Order</a>
+                                                <a href="#" class="btn btn-transparent red btn-outline btn-circle btn-sm">Delete Order</a>
+                                        </div>
+                                    </div>
+                                    <div class="portlet-body">
+                                        <div class="tabbable-line">
+                                            <ul class="nav nav-tabs nav-tabs-lg">
+                                                <li class="active">
+                                                    <a href="#tab_1" data-toggle="tab"> Details </a>
+                                                </li>
+                                                <li>
+                                                    <a href="#tab_2" data-toggle="tab"> Invoices
+                                                        <span class="badge badge-success">4</span>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="#tab_3" data-toggle="tab"> Credit Memos </a>
+                                                </li>
+                                                <li>
+                                                    <a href="#tab_4" data-toggle="tab"> Shipments
+                                                        <span class="badge badge-danger"> 2 </span>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="#tab_5" data-toggle="tab"> History </a>
+                                                </li>
+                                            </ul>
+                                            <div class="tab-content">
+                                                <div class="tab-pane active" id="tab_1">
+                                                    <div class="row">
+                                                        <div class="col-md-6 col-sm-12">
+                                                            <div class="portlet yellow-crusta box">
+                                                                <div class="portlet-title">
+                                                                    <div class="caption">
+                                                                        <i class="fa fa-cogs"></i>Order Details </div>
+                                                                    <div class="actions">
+                                                                        <a href="javascript:;" class="btn btn-default btn-sm">
+                                                                            <i class="fa fa-pencil"></i> Edit </a>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="portlet-body">
+                                                                    <div class="row static-info">
+                                                                        <div class="col-md-5 name"> Order #: </div>
+                                                                        <div class="col-md-7 value"> {{ get_main_order }}
+                                                                            <span class="label label-info label-sm"> SMS confirmation was sent </span>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row static-info">
+                                                                        <div class="col-md-5 name"> Timestamp: </div>
+                                                                        <div class="col-md-7 value"> {{ get_main_order.timestamp|date:"D d M Y" }} {{ get_main_order.timestamp|time:"H:i" }}</div>
+                                                                    </div>
+                                                                    <div class="row static-info">
+                                                                        <div class="col-md-5 name"> Order Status: </div>
+                                                                        <div class="col-md-7 value">
+                                                                            {% if get_main_order.approve ==  "False" %}
+                                                                                <span class="label label-danger"> Not Approved </span>
+                                                                            {% else %}
+                                                                                <span class="label label-success"> Approved </span>
+                                                                            {% endif %}
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row static-info">
+                                                                        <div class="col-md-5 name"> Grand Total: </div>
+                                                                        <div class="col-md-7 value"> &#8377;{{ get_main_order.get_all_final_total }} </div>
+                                                                    </div>
+                                                                    <div class="row static-info">
+                                                                        <div class="col-md-5 name"> Associated Order IDs: </div>
+                                                                        <div class="col-md-7 value"> {{ get_main_order.orders_list }} </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6 col-sm-12">
+                                                            <div class="portlet blue-hoki box">
+                                                                <div class="portlet-title">
+                                                                    <div class="caption">
+                                                                        <i class="fa fa-cogs"></i>Customer Information </div>
+                                                                    <div class="actions">
+                                                                        <a href="javascript:;" class="btn btn-default btn-sm">
+                                                                            <i class="fa fa-pencil"></i> Edit </a>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="portlet-body">
+                                                                    <div class="row static-info">
+                                                                        <div class="col-md-5 name"> Customer Name: </div>
+                                                                        <div class="col-md-7 value"> {{ shipping_details.user.get_full_name }} </div>
+                                                                    </div>
+                                                                    <div class="row static-info">
+                                                                        <div class="col-md-5 name"> Email: </div>
+                                                                        <div class="col-md-7 value"> {{ shipping_details.user.email }} </div>
+                                                                    </div>
+                                                                    <div class="row static-info">
+                                                                        <div class="col-md-5 name"> Phone Number: </div>
+                                                                        <div class="col-md-7 value"> {{ get_useraccount.phone }} </div>
+                                                                    </div>
+                                                                    <div class="row static-info">
+                                                                        <div class="col-md-5 name"> User Locality: </div>
+                                                                        <div class="col-md-7 value"> {{ get_useraccount.user_locality }} </div>
+                                                                    </div>
+                                                                    <div class="row static-info">
+                                                                        <div class="col-md-5 name"> Is First Time Customer: </div>
+                                                                        <div class="col-md-7 value"> {{ get_useraccount.is_first_time_user }} </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-6 col-sm-12">
+                                                            <div class="portlet green-meadow box">
+                                                                <div class="portlet-title">
+                                                                    <div class="caption">
+                                                                        <i class="fa fa-cogs"></i>Shipping Details </div>
+                                                                    <div class="actions">
+                                                                        <a href="javascript:;" class="btn btn-default btn-sm">
+                                                                            <i class="fa fa-pencil"></i> Edit </a>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="portlet-body">
+                                                                    <div class="row static-info">
+                                                                        <div class="col-md-5 name"> Customer Name: </div>
+                                                                        <div class="col-md-7 value"> {{ shipping_details.user.get_full_name }} </div>
+                                                                    </div>
+                                                                    <div class="row static-info">
+                                                                        <div class="col-md-5 name"> Delivery Address: </div>
+                                                                        <div class="col-md-7 value"> {{ shipping_details.shipping_address }} </div>
+                                                                    </div>
+                                                                    <div class="row static-info">
+                                                                        <div class="col-md-5 name"> Delivery Date & Time: </div>
+                                                                        <div class="col-md-7 value"> {{ shipping_details.delivery_date }} {{ shipping_details.delivery_time }} </div>
+                                                                    </div>
+                                                                    <div class="row static-info">
+                                                                        <div class="col-md-5 name"> Phone: </div>
+                                                                        <div class="col-md-7 value"> {{ get_useraccount.user_locality }} </div>
+                                                                    </div>
+                                                                    <div class="row static-info">
+                                                                        <div class="col-md-5 name"> Payment Method: </div>
+                                                                        <div class="col-md-7 value"> {{ shipping_details.payment_method }} </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6 col-sm-12">
+                                                            <div class="portlet yellow box">
+                                                                <div class="portlet-title">
+                                                                    <div class="caption">
+                                                                        <i class="fa fa-cogs"></i>General Info </div>
+                                                                    <div class="actions">
+                                                                        <a href="javascript:;" class="btn btn-default btn-sm">
+                                                                            <i class="fa fa-pencil"></i> Edit </a>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="portlet-body">
+                                                                    <div class="row static-info">
+                                                                        <div class="col-md-5 name"> Notes: </div>
+                                                                        <div class="col-md-7 value"> {{ get_main_order.notes }} </div>
+                                                                    </div>
+                                                                    <div class="row static-info">
+                                                                        <div class="col-md-5 name"> Customer Notification: </div>
+                                                                        <div class="col-md-7 value"> {{ get_main_order.notify_customer }} </div>
+                                                                    </div>
+                                                                    <div class="row static-info">
+                                                                        <div class="col-md-5 name"> Delivery Date & Time: </div>
+                                                                        <div class="col-md-7 value"> {{ shipping_details.delivery_date }} {{ shipping_details.delivery_time }} </div>
+                                                                    </div>
+                                                                    <div class="row static-info">
+                                                                        <div class="col-md-5 name"> Phone: </div>
+                                                                        <div class="col-md-7 value"> {{ get_useraccount.user_locality }} </div>
+                                                                    </div>
+                                                                    <div class="row static-info">
+                                                                        <div class="col-md-5 name"> Payment Method: </div>
+                                                                        <div class="col-md-7 value"> {{ shipping_details.payment_method }} </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-12 col-sm-12">
+                                                            <div class="portlet grey-cascade box">
+                                                                <div class="portlet-title">
+                                                                    <div class="caption">
+                                                                        <i class="fa fa-cogs"></i>Shopping Cart </div>
+                                                                    <div class="actions">
+                                                                        <a href="javascript:;" class="btn btn-default btn-sm">
+                                                                            <i class="fa fa-pencil"></i> Edit </a>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="portlet-body">
+                                                                    <div class="table-responsive">
+                                                                        <table class="table table-hover table-bordered table-striped">
+                                                                            <thead>
+                                                                                <tr>
+                                                                                    <th> Sub Order Id </th>
+                                                                                    <th> Order Status </th>
+                                                                                    <th> Product </th>
+                                                                                    <th> Price </th>
+                                                                                    <th> Quantity </th>
+                                                                                    <th> Tax Amount </th>
+                                                                                    <th> Discount Amount </th>
+                                                                                    <th> Total </th>
+                                                                                    <th>Action</th>
+                                                                                </tr>
+                                                                            </thead>
+                                                                            <tbody>
+                                                                            {% for item in get_main_order.order.all %}
+                                                                                <tr>
+                                                                                    <td>
+                                                                                        <a href="javascript:;"> {{ item }} </a>
+                                                                                    </td>
+                                                                                    <td>
+                                                                                        {% if item.status == "Pending" %}
+                                                                                            <span class="label label-sm label-warning">{{ item.status }}</span>
+                                                                                        {% elif item.status == "Confirmed" %}
+                                                                                            <span class="label label-sm label-primary">{{ item.status }}</span>
+                                                                                        {% elif item.status == "Cancelled" %}
+                                                                                            <span class="label label-sm label-danger">{{ item.status }}</span>
+                                                                                        {% elif item.status == "Baking" %}
+                                                                                            <span class="label label-sm label-success">{{ item.status }}</span>
+                                                                                        {% elif item.status == "Shipped" %}
+                                                                                            <span class="label label-sm label-info">{{ item.status }}</span>
+                                                                                        {% elif item.status == "Ready" %}
+                                                                                            <span class="label label-sm label-default">{{ item.status }}</span>
+                                                                                        {% elif item.status == "Complete" %}
+                                                                                            <span class="label label-sm bg-purple">{{ item.status }}</span>
+                                                                                        {% endif %}
+                                                                                    </td>
+                                                                                    <td>
+                                                                                        {{ item.cartitem.product }}
+                                                                                        <br>- by {{ item.cartitem.product.baker }}
+                                                                                    </td>
+                                                                                    <td> 
+                                                                                        {{ item.cartitem.cart_item_total }} 
+                                                                                    </td>
+                                                                                    <td>
+                                                                                        {{ item.cartitem.quantity }}  
+                                                                                    </td>
+                                                                                    <td>
+                                                                                        &#8377;{{ item.tax_total }} 
+                                                                                    </td>
+                                                                                    <td> 
+                                                                                        &#8377;{{ item.discount_total }} 
+                                                                                    </td>
+                                                                                    <td> 
+                                                                                        &#8377;{{ item.get_final_amount }} 
+                                                                                    </td>
+                                                                                    <td>
+                                                                                        <a href="#" >Notify Baker</a>/ 
+                                                                                        {% if item.status == "Complete" or item.status == "Cancelled" %}
+                                                                                            <a href="#">Order is {{ item.status }}</a>
+                                                                                        {% else %}
+                                                                                            <form id="quick_status_update_form" action="{% url 'superadmin_quick_order_status_update' item %}" method="post">{% csrf_token %}
+                                                                                            <select class="form-control input-sm" name="status">
+                                                                                                {% if item.status == "Pending" %}
+                                                                                                    <option value="" disabled="disabled" selected="selected">Change Status</option>
+                                                                                                    <option value="Cancelled">Cancel</option>
+                                                                                                    <option value="Confirmed">Confirm</option>
+                                                                                                {% elif item.status == "Confirmed" %}
+                                                                                                    <option value="" disabled="disabled" selected="selected">Change Status</option>
+                                                                                                    <option value="Baking">Baking</option>
+                                                                                                    <option value="Ready">Ready</option>
+                                                                                                {% elif item.status == "Baking" or item.status == "Ready" %}
+                                                                                                    <option value="" disabled="disabled" selected="selected">Change Status</option>
+                                                                                                    <option value="Shipped">Shipped</option>
+                                                                                                    <option value="Complete">Complete</option>
+                                                                                                {% elif item.status == "Shipped" %}
+                                                                                                    <option value="" disabled="disabled" selected="selected">Change Status</option>
+                                                                                                    <option value="Complete">Complete</option>
+                                                                                                {% endif %}
+                                                                                            </select>
+                                                                                            <input type="submit" class="btn grey-mint btn-outline btn-xs " value="Submit"></input>
+                                                                                            </form>
+                                                                                        {% endif %}
+                                                                                        
+                                                                                    </td>
+                                                                                </tr>
+                                                                            {% endfor %}    
+                                                                            </tbody>
+                                                                        </table>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-6"> </div>
+                                                        <div class="col-md-6">
+                                                            <div class="well">
+                                                                <div class="row static-info align-reverse">
+                                                                    <div class="col-md-8 name"> Sub Total: </div>
+                                                                    <div class="col-md-3 value"> &#8377;{{ get_main_order.get_all_sub_total }} </div>
+                                                                </div>
+                                                                <div class="row static-info align-reverse">
+                                                                    <div class="col-md-8 name"> Tax Total: </div>
+                                                                    <div class="col-md-3 value"> &#8377;{{ get_main_order.get_all_tax_total }} </div>
+                                                                </div>
+                                                                <div class="row static-info align-reverse">
+                                                                    <div class="col-md-8 name"> Discount Total: </div>
+                                                                    <div class="col-md-3 value"> &#8377;{{ get_main_order.get_all_discount_total }} </div>
+                                                                </div>
+                                                                <div class="row static-info align-reverse">
+                                                                    <div class="col-md-8 name"> Grand Total: </div>
+                                                                    <div class="col-md-3 value"> &#8377;{{ get_main_order.get_all_final_total }} </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="tab-pane" id="tab_2">
+                                                    <div class="table-container">
+                                                        <div class="table-actions-wrapper">
+                                                            <span> </span>
+                                                            <select class="table-group-action-input form-control input-inline input-small input-sm">
+                                                                <option value="">Select...</option>
+                                                                <option value="pending">Pending</option>
+                                                                <option value="paid">Paid</option>
+                                                                <option value="canceled">Canceled</option>
+                                                            </select>
+                                                            <button class="btn btn-sm yellow table-group-action-submit">
+                                                                <i class="fa fa-check"></i> Submit</button>
+                                                        </div>
+                                                        <table class="table table-striped table-bordered table-hover" id="datatable_invoices">
+                                                            <thead>
+                                                                <tr role="row" class="heading">
+                                                                    <th width="5%">
+                                                                        <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
+                                                                            <input type="checkbox" class="group-checkable" data-set="#sample_2 .checkboxes" />
+                                                                            <span></span>
+                                                                        </label>
+                                                                    </th>
+                                                                    <th width="5%"> Invoice&nbsp;# </th>
+                                                                    <th width="15%"> Bill To </th>
+                                                                    <th width="15%"> Invoice&nbsp;Date </th>
+                                                                    <th width="10%"> Amount </th>
+                                                                    <th width="10%"> Status </th>
+                                                                    <th width="10%"> Actions </th>
+                                                                </tr>
+                                                                <tr role="row" class="filter">
+                                                                    <td> </td>
+                                                                    <td>
+                                                                        <input type="text" class="form-control form-filter input-sm" name="order_invoice_no"> </td>
+                                                                    <td>
+                                                                        <input type="text" class="form-control form-filter input-sm" name="order_invoice_bill_to"> </td>
+                                                                    <td>
+                                                                        <div class="input-group date date-picker margin-bottom-5" data-date-format="dd/mm/yyyy">
+                                                                            <input type="text" class="form-control form-filter input-sm" readonly name="order_invoice_date_from" placeholder="From">
+                                                                            <span class="input-group-btn">
+                                                                                <button class="btn btn-sm default" type="button">
+                                                                                    <i class="fa fa-calendar"></i>
+                                                                                </button>
+                                                                            </span>
+                                                                        </div>
+                                                                        <div class="input-group date date-picker" data-date-format="dd/mm/yyyy">
+                                                                            <input type="text" class="form-control form-filter input-sm" readonly name="order_invoice_date_to" placeholder="To">
+                                                                            <span class="input-group-btn">
+                                                                                <button class="btn btn-sm default" type="button">
+                                                                                    <i class="fa fa-calendar"></i>
+                                                                                </button>
+                                                                            </span>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="margin-bottom-5">
+                                                                            <input type="text" class="form-control form-filter input-sm" name="order_invoice_amount_from" placeholder="From" /> </div>
+                                                                        <input type="text" class="form-control form-filter input-sm" name="order_invoice_amount_to" placeholder="To" /> </td>
+                                                                    <td>
+                                                                        <select name="order_invoice_status" class="form-control form-filter input-sm">
+                                                                            <option value="">Select...</option>
+                                                                            <option value="pending">Pending</option>
+                                                                            <option value="paid">Paid</option>
+                                                                            <option value="canceled">Canceled</option>
+                                                                        </select>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="margin-bottom-5">
+                                                                            <button class="btn btn-sm yellow filter-submit margin-bottom">
+                                                                                <i class="fa fa-search"></i> Search</button>
+                                                                        </div>
+                                                                        <button class="btn btn-sm red filter-cancel">
+                                                                            <i class="fa fa-times"></i> Reset</button>
+                                                                    </td>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody> </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                                <div class="tab-pane" id="tab_3">
+                                                    <div class="table-container">
+                                                        <table class="table table-striped table-bordered table-hover" id="datatable_credit_memos">
+                                                            <thead>
+                                                                <tr role="row" class="heading">
+                                                                    <th width="5%"> Credit&nbsp;Memo&nbsp;# </th>
+                                                                    <th width="15%"> Bill To </th>
+                                                                    <th width="15%"> Created&nbsp;Date </th>
+                                                                    <th width="10%"> Status </th>
+                                                                    <th width="10%"> Actions </th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody> </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                                <div class="tab-pane" id="tab_4">
+                                                    <div class="table-container">
+                                                        <table class="table table-striped table-bordered table-hover" id="datatable_shipment">
+                                                            <thead>
+                                                                <tr role="row" class="heading">
+                                                                    <th width="5%"> Shipment&nbsp;# </th>
+                                                                    <th width="15%"> Ship&nbsp;To </th>
+                                                                    <th width="15%"> Shipped&nbsp;Date </th>
+                                                                    <th width="10%"> Quantity </th>
+                                                                    <th width="10%"> Actions </th>
+                                                                </tr>
+                                                                <tr role="row" class="filter">
+                                                                    <td>
+                                                                        <input type="text" class="form-control form-filter input-sm" name="order_shipment_no"> </td>
+                                                                    <td>
+                                                                        <input type="text" class="form-control form-filter input-sm" name="order_shipment_ship_to"> </td>
+                                                                    <td>
+                                                                        <div class="input-group date date-picker margin-bottom-5" data-date-format="dd/mm/yyyy">
+                                                                            <input type="text" class="form-control form-filter input-sm" readonly name="order_shipment_date_from" placeholder="From">
+                                                                            <span class="input-group-btn">
+                                                                                <button class="btn btn-sm default" type="button">
+                                                                                    <i class="fa fa-calendar"></i>
+                                                                                </button>
+                                                                            </span>
+                                                                        </div>
+                                                                        <div class="input-group date date-picker" data-date-format="dd/mm/yyyy">
+                                                                            <input type="text" class="form-control form-filter input-sm" readonly name="order_shipment_date_to" placeholder="To">
+                                                                            <span class="input-group-btn">
+                                                                                <button class="btn btn-sm default" type="button">
+                                                                                    <i class="fa fa-calendar"></i>
+                                                                                </button>
+                                                                            </span>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="margin-bottom-5">
+                                                                            <input type="text" class="form-control form-filter input-sm" name="order_shipment_quantity_from" placeholder="From" /> </div>
+                                                                        <input type="text" class="form-control form-filter input-sm" name="order_shipment_quantity_to" placeholder="To" /> </td>
+                                                                    <td>
+                                                                        <div class="margin-bottom-5">
+                                                                            <button class="btn btn-sm yellow filter-submit margin-bottom">
+                                                                                <i class="fa fa-search"></i> Search</button>
+                                                                        </div>
+                                                                        <button class="btn btn-sm red filter-cancel">
+                                                                            <i class="fa fa-times"></i> Reset</button>
+                                                                    </td>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody> </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                                <div class="tab-pane" id="tab_5">
+                                                    <div class="table-container">
+                                                        <table class="table table-striped table-bordered table-hover" id="datatable_history">
+                                                            <thead>
+                                                                <tr role="row" class="heading">
+                                                                    <th width="25%"> Datetime </th>
+                                                                    <th width="55%"> Description </th>
+                                                                    <th width="10%"> Notification </th>
+                                                                    <th width="10%"> Actions </th>
+                                                                </tr>
+                                                                <tr role="row" class="filter">
+                                                                    <td>
+                                                                        <div class="input-group date datetime-picker margin-bottom-5" data-date-format="dd/mm/yyyy hh:ii">
+                                                                            <input type="text" class="form-control form-filter input-sm" readonly name="order_history_date_from" placeholder="From">
+                                                                            <span class="input-group-btn">
+                                                                                <button class="btn btn-sm default date-set" type="button">
+                                                                                    <i class="fa fa-calendar"></i>
+                                                                                </button>
+                                                                            </span>
+                                                                        </div>
+                                                                        <div class="input-group date datetime-picker" data-date-format="dd/mm/yyyy hh:ii">
+                                                                            <input type="text" class="form-control form-filter input-sm" readonly name="order_history_date_to" placeholder="To">
+                                                                            <span class="input-group-btn">
+                                                                                <button class="btn btn-sm default date-set" type="button">
+                                                                                    <i class="fa fa-calendar"></i>
+                                                                                </button>
+                                                                            </span>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <input type="text" class="form-control form-filter input-sm" name="order_history_desc" placeholder="To" /> </td>
+                                                                    <td>
+                                                                        <select name="order_history_notification" class="form-control form-filter input-sm">
+                                                                            <option value="">Select...</option>
+                                                                            <option value="pending">Pending</option>
+                                                                            <option value="notified">Notified</option>
+                                                                            <option value="failed">Failed</option>
+                                                                        </select>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="margin-bottom-5">
+                                                                            <button class="btn btn-sm yellow filter-submit margin-bottom">
+                                                                                <i class="fa fa-search"></i> Search</button>
+                                                                        </div>
+                                                                        <button class="btn btn-sm red filter-cancel">
+                                                                            <i class="fa fa-times"></i> Reset</button>
+                                                                    </td>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody> </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- End: life time stats -->
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END CONTENT BODY -->
+                </div>
+                <!-- END CONTENT -->
+                <div id="errorModal" class="modal fade" tabindex="-1" data-backdrop="static" data-keyboard="false" data-attention-animation="false">
+                                            <div class="modal-body">
+                                                <p> Something went wrong! </p>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" data-dismiss="modal" class="btn btn-outline dark">Close</button>
+                                            </div>
+                                        </div>
+{% endblock %}
+
+{% block extrajs %}
+<!-- PAGE LEVEL SCRIPTS -->
+<!-- END PAGE LEVEL SCRIPTS -->
+<script type="text/javascript">
+    $('li.bakers').addClass('start active open');
+    $('li.bakers').find('.view-all').addClass('active open');
+
+    $('#quick_status_update_form').submit(function(e) { // catch the form's submit event
+        e.preventDefault();
+        $.ajax({ // create an AJAX call...
+            data: $(this).serialize(), // get the form data
+            type: $(this).attr('method'), // GET or POST
+            url: $(this).attr('action'), // the file to call
+            success: function(data) { // on success..
+              var quick_status = jQuery.parseJSON(data);
+              if(quick_status.result == "success"){ // if true (1)
+                   location.reload(); 
+               }
+            },
+            error: function(data) {
+                setTimeout(function() {
+                  $('#errorModal').modal({backdrop:'static', keyboard:false,show:true});
+                }, 1000);
+            }/*  end of error */
+        });
+        return false;
+    });
+</script>
+<script type="text/javascript">
+</script>
+{% endblock %}

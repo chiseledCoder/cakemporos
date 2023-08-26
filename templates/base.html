@@ -1,0 +1,323 @@
+{% load staticfiles %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="Cakemporos - #CakeYourDaySpecial!. Order cakes, cupcakes online in Mumbai! Every celebration needs to be special. Cakemporos will cake your day special. ">
+        <meta name="author" content="cake, cakes, cupcake, cupcakes, on-demand, delivery, mumbai, gifts, designer cakes, custom cakes, fruit cakes, chocolate cakes, assorted cakes">
+        <link rel="icon" href="{% static 'store/image/fav.png' %}" type="image/png"/>
+        <link rel="shortcut icon" href="{% static 'store/image/fav.png' %}" type="image/png"/>
+        <title>{% block title %} Cakemporos | {{ site_name }}{% endblock %}</title>
+       <!-- CSS -->
+        {% include 'all_css.html' %}
+        {% block extracss %}
+
+        {% endblock %}
+        <style type="text/css">
+             .has-feedback .form-control-feedback {
+            padding: 10px;
+        }
+        </style>
+        <script src="https://use.fontawesome.com/b906dc0b11.js"></script>
+        {% block reward_facebook_share %}
+        {% endblock %}
+            <!--Start of Zopim Live Chat Script-->
+<script type="text/javascript">
+window.$zopim||(function(d,s){var z=$zopim=function(c){z._.push(c)},$=z.s=
+d.createElement(s),e=d.getElementsByTagName(s)[0];z.set=function(o){z.set.
+_.push(o)};z._=[];z.set._=[];$.async=!0;$.setAttribute("charset","utf-8");
+$.src="//v2.zopim.com/?4FjKTHCdf5iqiW9melFqnWvSqlg1U64z";z.t=+new Date;$.
+type="text/javascript";e.parentNode.insertBefore($,e)})(document,"script");
+</script>
+<!--End of Zopim Live Chat Script-->
+<!--Start of Google Analytics Script-->
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-69743363-2', 'auto');
+  ga('send', 'pageview');
+
+</script>
+<!--End of Google Analytics Script-->
+    </head>
+
+    <body>
+          <div id="fb-root"></div>
+         <script>(function(d, s, id) {
+          var js, fjs = d.getElementsByTagName(s)[0];
+          if (d.getElementById(id)) return;
+          js = d.createElement(s); js.id = id;
+          js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.7&appId=1194741757223575";
+          fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));</script>
+        <!-- ************************************* -->
+        <!-- NAvbar block -->
+        <!-- <div id="preloader"></div> -->
+        {% include 'core/navbar.html' %}
+        <!-- End Navbar -->
+        <!-- ************************************* -->
+        <!-- Main Block -->
+        {% block content %}
+         
+        {% endblock %}
+        <!-- End of Main Block -->
+        <!-- ************************************* -->
+        <!-- Footer Block -->
+        {% include 'core/footer.html' %}
+        <!-- End of Footer -->
+        <!-- ************************************* -->
+        <!-- modal Block -->
+        {% include 'core/modals.html' %}
+        <!-- End of extramodals -->
+        <!-- ************************************* -->
+         <!-- Extra JavaScript -->
+        <!-- ************************************* -->
+        <!-- Javascript Block -->
+        {% include 'all_js.html' %}
+        <!-- End of JavaScript -->
+        <!-- ************************************* -->
+         <!-- Extra JavaScript -->
+        {% block extrajs %}  
+        
+        {% endblock %}
+        <a href="#0" class="cd-top">Top</a>
+        <script type="text/javascript" src="{% static 'store/js/base.js' %}"></script>
+        <script type="text/javascript">
+        function openForgotPassword() {
+            var userPhone = $('#login-username');
+            if (userPhone.val().length === 0 ) {
+                userPhone.closest('div').addClass('has-error');
+                $('#no-pno-label').css('display','block');
+                userPhone.focus();
+            } else {
+                $.ajax({
+                    url: "{% url 'forgotpass_send_otp' %}", // the file to call
+                    type: "POST", // GET or POST
+                    data: $('#login-username').val(), // get the form data
+                    success: function(data){
+                        var forgotpass_response = jQuery.parseJSON(data);
+                        console.log(data);
+                        if (forgotpass_response.verification == "success") {
+                            $('#login-modal').modal('hide');    
+                            $('#OTP-forgotpass-modal').modal({backdrop:'static', keyboard:false,show:true});    
+                            $('#verify-user-phone-forgotpass').html(forgotpass_response.user_phone);
+                            $('#forgotpass_otp_phone').val(forgotpass_response.user_phone);
+                        }
+                        else {
+                            $('#no-user-error').css('display', 'block');
+
+                        }
+
+                    },/*end of success*/
+                    error: function(data) {
+                              $('#errorModal').modal({backdrop:'static', keyboard:false,show:true});
+                    }/*  end of error */
+                 });
+                }/* else */
+            };
+        $(document).ready(function(){
+            /*$(window).load(function(){
+                $('#preloader').fadeOut('slow',function(){$(this).remove();});
+            });*/
+
+            $('#loginform').submit(function(e){
+                var formId = $(this).attr('id');
+                var submitBtn = $(this).find('input[type=submit]');
+                submitBtn.prop('disabled', true);
+                $('#no-user-error').css('display', 'none');
+                $('#password-error').css('display', 'none');
+                e.preventDefault();
+                $.ajax({
+                    url: "{% url 'user_login' %}", // the file to call
+                    type: "POST", // GET or POST
+                    data: $(this).serialize(), // get the form data
+                    success: function(data){
+                    var login_response = jQuery.parseJSON(data);
+                    console.log(login_response);
+                        if (login_response.user == "nouser"){
+                            $('#no-user-error').css('display', 'block');
+                            submitBtn.prop('disabled', false);
+                        }
+                        else if (login_response.user == "password wrong") {
+                            $('#password-error').css('display', 'block');
+                            submitBtn.prop('disabled', false);
+                        } 
+                        else if ((login_response.user == "not active") && (login_response.user_phone)) {
+                            $('#login-modal').modal('hide');
+                            $('#OTP-modal').modal({backdrop:'static', keyboard:false,show:true});
+                            $('#verify-user-phone').html(login_response.user_phone);
+                            document.getElementById(formId).reset();
+                            submitBtn.prop('disabled', false);
+                        }
+                        else {
+                            if (login_response.login == "Failed") {
+                            alert("Invalid Login!");
+                            } else {
+                                document.getElementById(formId).reset();
+                                $('#login-modal').modal('hide');
+                                setTimeout(function() {
+                                      location.reload();
+                                    }, 400);
+                                }
+                            }/*./else*/
+                        submitBtn.prop('disabled', false);
+                        $('#spinner-login').css('display', 'none');
+                        },/* end of Success */
+                        error: function(data) {
+                              $('#loginModal').modal('hide');
+                              $('#errorModal').modal({backdrop:'static', keyboard:false,show:true});
+
+                        }/*  end of error */
+                    });
+                /*./ajax*/
+            });
+            $('#signupForm').submit(function(e){
+                var formId = $(this).attr('id');
+                var submitBtn = $(this).find('input[type=submit]');
+                $('#user-phone-exists-error').css('display','none');
+                $('#user-email-exists-error').css('display','none');
+                submitBtn.prop('disabled', true);
+                e.preventDefault();
+                $.ajax({
+                    url: "{% url 'user_signup' %}", // the file to call
+                    type: "POST", // GET or POST
+                    data: $(this).serialize(), // get the form data
+                    success: function(data){
+                            var signup_response = jQuery.parseJSON(data);
+                            if (signup_response.userpresent == "True"){
+                                $('#user-phone-exists-error').css('display','block');
+                            }
+                            else if (signup_response.emailpresent == "True"){
+                                $('#user-email-exists-error').css('display','block');
+                            }
+                            else if (signup_response.register == "Success") {
+                                    $('#register-modal').modal('hide');
+                                    $('#OTP-modal').modal({backdrop:'static', keyboard:false,show:true});
+                                    $('#verify-user-phone').html(signup_response.user_phone);
+                                    $('#otp_username').val(signup_response.user_phone);
+                                    submitBtn.prop('disabled', false);
+                                    $('#user-phone-exists-error').css('display','none');
+                                    $('#user-email-exists-error').css('display','none');
+                                }
+                            else if(signup_response.error == "True"){
+                                $('#register-modal').modal('hide');
+                                setTimeout(function() {
+                                    $('#errorModal').modal({backdrop:'static', keyboard:false,show:true});
+                                }, 1000);
+                            }
+                        },/* end of Success */
+                        error: function(data) {
+                                $('#register-modal').modal('hide');
+                                setTimeout(function() {
+                                    $('#errorModal').modal({backdrop:'static', keyboard:false,show:true});
+                                }, 1000);
+                                
+                        }/*  end of error */
+                    });
+                /*./ajax*/
+            });/*./ SIGNUP FORM*/
+            $('#otpVerification').submit(function(e){
+                var formId = $(this).attr('id');
+                var submitBtn = $(this).find('input[type=submit]');
+                submitBtn.prop('disabled', true);
+                e.preventDefault();
+                $.ajax({
+                    url: "{% url 'user_otp_verification' %}", // the file to call
+                    type: "POST", // GET or POST
+                    data: $(this).serialize(), // get the form data
+                    success: function(data){
+                    var verification_response = jQuery.parseJSON(data);
+                    console.log(verification_response);
+                    if (verification_response.verification == "success") {
+                        $('#OTP-modal').modal('hide');
+                        submitBtn.prop('disabled', false);
+                                setTimeout(function() {
+                                      location.reload();
+                                    }, 400);
+                        }
+                    },/* end of Success */
+                        error: function(data) {
+                              $('#OTP-modal').modal('hide');
+                                setTimeout(function() {
+                                    $('#errorModal').modal({backdrop:'static', keyboard:false,show:true});
+                                }, 1000);
+                        }/*  end of error */
+                });
+                /*./ajax*/
+            });
+            $('#forgotpassOtpVerification').submit(function(e){
+                var formId = $(this).attr('id');
+                var submitBtn = $(this).find('input[type=submit]');
+                submitBtn.prop('disabled', true);
+                e.preventDefault();
+                $.ajax({
+                    url: "{% url 'forgotpass_verify_otp' %}", // the file to call
+                    type: "POST", // GET or POST
+                    data: $(this).serialize(), // get the form data
+                    success: function(data){
+                    var verification_response = jQuery.parseJSON(data);
+                    console.log(verification_response);
+                        if (verification_response.verification == "success") {
+                            $('#OTP-forgotpass-modal').modal('hide');
+                            $('#reset-password-modal').modal({backdrop:'static', keyboard:false,show:true});
+                            $('#reset_username').val(verification_response.username)
+                            submitBtn.prop('disabled', false);
+                        }
+                        else{
+                            submitBtn.prop('disabled', false);
+                            $('#correctOTP').css('display', 'block')
+                        }
+
+                    },/* end of Success */
+                    error: function(data) {
+                        $('#OTP-forgotpass-modal').modal('hide');
+                                setTimeout(function() {
+                                    $('#errorModal').modal({backdrop:'static', keyboard:false,show:true});
+                                }, 1000);
+                    }/*  end of error */
+                });
+                /*./ajax*/
+            });
+            $('#resetPassword').submit(function(e){
+                var formId = $(this).attr('id');
+                var submitBtn = $(this).find('input[type=submit]');
+                submitBtn.prop('disabled', true);
+                e.preventDefault();
+                $.ajax({
+                    url: "{% url 'user_reset_password' %}", // the file to call
+                    type: "POST", // GET or POST
+                    data: $(this).serialize(), // get the form data
+                    success: function(data){
+                    var reset_password_response = jQuery.parseJSON(data);
+                    console.log(reset_password_response);
+                    if (reset_password_response.password_reset == "success") {
+                        $('#successMessage').html('Password Reset Done!')
+                        submitBtn.prop('disabled', false);
+                                setTimeout(function() {
+                                      location.reload();
+                                    }, 800);
+                        }
+                    },/* end of Success */
+                        error: function(data) {
+                              $('#reset-password-modal').modal('hide');
+                                setTimeout(function() {
+                                    $('#errorModal').modal({backdrop:'static', keyboard:false,show:true});
+                                }, 1000);
+                        }/*  end of error */
+                });
+                /*./ajax*/
+            });
+        });/* ./Document.ready */
+        </script>
+        <!-- End of Extra JavaScript -->
+        <!-- ************************************* -->
+
+    </body>
+</html>

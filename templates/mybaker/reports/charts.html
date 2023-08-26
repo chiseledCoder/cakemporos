@@ -1,0 +1,49 @@
+{% extends 'myadmin/base.html' %}
+{% load staticfiles %}
+{% block content %}
+<div class="col-sm-4 col-md-4">
+                        <select id="avgByDaySelect" class="form-control input-sm">
+                            <option value=7>Last 7 Days</option>
+                            <option value=14>Last 14 Days</option>
+                            <option value=30>Last 30 Days</option>
+                        </select>
+                    </div>
+<div id="avgByDayPanel" class="panel-body"></div>
+
+{% endblock %}
+{% block extrajs %}
+<script type="text/javascript">
+	var jsonUrl = '{% url 'myadmin_chart_json' %}'
+	// Glucose Average by Day
+     var avgByDayOptions = {
+        credits: {
+            enabled: false
+        },
+        chart: {
+            renderTo: 'avgByDayPanel',
+            type: 'area',
+        },
+        legend: {enabled: false},
+        title: {text: null},
+        xAxis: {labels: {rotation: -45}},
+        yAxis: {title: {text: null}},
+        series: [{}],
+    };
+
+    function loadCountByDay(path){
+        $.getJSON(path,
+            function(data) {
+                avgByDayOptions.xAxis.categories = data['chart_data']['dates'];
+                avgByDayOptions.series[0].name = 'Avg Glucose ({{ user.settings.glucose_unit }})';
+                avgByDayOptions.series[0].data = data['chart_data']['values'];
+                var chart = new Highcharts.Chart(avgByDayOptions);
+        });
+    }
+
+    $('#avgByDaySelect').change(function(){
+        var days = $('#avgByDaySelect').val();
+        var path = jsonUrl + '?name=total_by_day&days=' + days;
+        loadCountByDay(path);
+    });
+</script>
+{% endblock %}

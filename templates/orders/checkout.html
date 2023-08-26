@@ -1,0 +1,778 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% load staticfiles %}
+{% block extracss %}
+<style type="text/css">
+
+  @media screen and (max-width: 26em) { 
+    .payment-options {
+      text-align: center;
+    }
+  }
+  .pac-container {
+        z-index: 10000 !important;
+    }
+  #deliveryCharge, #updateDeliveryCost{
+    display: inline;
+  }
+  #cartTotal, #updateCartTotal{
+    display: inline;
+  }
+  #couponDetails, #updateCouponDetails{
+    display: inline;
+  }
+  #amountPayable, #updateAmountPayable{
+    display: inline;
+  }
+</style>
+
+<!-- remove this if you use Modernizr -->
+    <script>(function(e,t,n){var r=e.querySelectorAll("html")[0];r.className=r.className.replace(/(^|\s)no-js(\s|$)/,"$1js$2")})(document,window,0);</script>
+{% endblock %}
+{% block content %}
+<div class="wrapper">
+  <div id="main-content">
+{% if get_total_items == 0 %}
+  <div class="text-center small-padding">
+    <h3 class="text-center">You have nothing in your cart.</h3>
+    <a href="{% url 'userindex' %}" class="btn btn-cakemporos">Continue Shopping</a>
+  </div>
+{% else %}
+{% if get_cart_total < 349.99 %}
+  <div class="text-center small-padding">
+    <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+          <div class="box">
+                  <div class="box-body">
+                  <h3 class="text-center"> Cart value less than &#8377;&nbsp;350.</h3>
+                  <p>Update Cart or Continue Shopping</p>
+                <hr/>
+                    <div class="table-responsive">
+                  <table class="table text-center" id="cart-table">
+                      <thead class="bg-cakemporos">
+                      <th class="text-center">Item</th>
+                      <th class="text-center">Baker</th>
+                      <th class="text-center">Details</th>
+                      <th class="text-center">Total</th>
+                      <th class="text-center">Action</th>
+                      </thead>
+                      <tbody>
+                        {% for item in cart.cartitem_set.all %}
+                          {% if item.product %}
+                          <tr class="cart_item">
+                            <td><b>{{ item.product }}</b><br/>
+                           </td>
+                            <td>{{ item.product.baker }}</td>
+                            <td>
+                              <table class="centralize">
+                                {% if item.egg_or_eggless %}
+                                <tr>
+                                  <td>
+                                    <b class="pull-right">Egg or Eggless:</b>
+                                  </td>
+                                  <td>
+                                    <span class="pull-left pad-sm-left" id="egg-price{{ item.id }}"> {{ item.egg_or_eggless }}&nbsp;(Cost: &#8377;&nbsp;{{ item.egg_or_eggless_price }})</span>
+                                  </td>
+                                </tr>
+                                {% endif %}
+                                {% if item.weight %}
+                                <tr>
+                                  <td>
+                                    <b class="pull-right">Weight:</b>
+                                  </td>
+                                  <td>
+                                    <span class="pull-left pad-sm-left" id="weight-price"> {{ item.weight }}&nbsp;(Cost: &#8377;&nbsp;{{ item.weight_price }})</span>
+                                  </td>
+                                </tr>
+                                {% endif %}
+                                {% if item.cupcake_qty %}
+                                <tr>
+                                  <td>
+                                    <b class="pull-right">Cupcake Qty:</b> 
+                                  </td>
+                                  <td>
+                                    <span class="pull-left pad-sm-left" id="cupcake-box">{{ item.cupcake_qty }}</span>
+                                  </td>   
+                                </tr>
+                                {% else %}
+                                <tr>
+                                  <td>
+                                    <b class="pull-right">Quantity:</b> 
+                                  </td>
+                                  <td>
+                                    <span class="pull-left pad-sm-left" id="item-qty">{{ item.quantity }}</span>
+                                  </td>   
+                                </tr>
+                                {% endif %}
+                                {% if item.product.product_type.title == "Cake" %}
+                                  {% if item.msg_on_cake %}
+                                    <tr>
+                                      <td>
+                                        <b class="pull-right">Message:</b>
+                                      </td>
+                                      <td>
+                                        <span class="pull-left pad-sm-left">{{ item.msg_on_cake }}</span>
+                                      </td>
+                                    </tr>
+                                    {% else %}
+                                    <tr>
+                                      <td>
+                                        <b class="pull-right">Message:</b>
+                                      </td>
+                                      <td>
+                                       <a href="#" id="update-item{{ item.id }}" data-toggle="modal" data-target="#update-modal{{ item.id }}" class="pull-left pad-sm-left text-froly"> Click to add message on cake
+                              </a>
+                                      </td>
+                                    </tr>
+                                    {% endif %}
+                                    
+
+                                  {% endif %}
+                                {% if item.photo_cake_image %}
+                                <tr>
+                                  <td>
+                                    <b class="pull-right">Photo:</b>
+                                  </td>
+                                  <td>
+                                    <img src="{{ S3_URL}}/{{ item.photo_cake_image }}" height="100px" width="100px"><br/>
+                                    (Cost: &#8377;&nbsp;{{ item.photo_cake_cost }}) 
+                                  </td>
+                                </tr>
+                                {% endif %} 
+                              </table>
+                            </td>
+                            <td>
+                              &#8377;&nbsp;{{ item.cart_item_total }}
+                            </td>
+                            <td>
+                              <a href="#" id="update-item{{ item.id }}" data-toggle="modal" data-target="#update-modal{{ item.id }}">
+                                <i class="fa fa-pencil" data-toggle="tooltip" data-placement="bottom" title="Modify {{ item.product }}"></i>
+                              </a>| 
+                              <a href="#" id="remove-item{{ item.id }}">
+                                <i class="fa fa-times" data-toggle="tooltip" data-placement="bottom" title="Remove {{ item.product }}"></i>
+                              </a>
+                            </td>
+                          </tr>
+                          {% else %}
+                            <tr>
+                              <td><b>{{ item.addon }}</b></td>
+                              <td></td>
+                              <td></td>
+                              <td>&#8377;&nbsp;{{ item.addon_price }}</td>
+                              <td><a href="#" id="remove-item{{ item.id }}">
+                                <i class="fa fa-times" data-toggle="tooltip" data-placement="bottom" title="Remove {{ item.addon }}"></i>
+                              </a></td>
+                            </tr>
+                          {% endif %}
+                        {% endfor %}
+                      </tbody>
+                      {% if coupon_present == "Yes" %}
+                        <tr>
+                          <td></td>
+                          <td></td>
+                          <td class="bg-grey">Coupon: {{ coupon_code }}</td>
+                          <td class="bg-grey">-&nbsp;{{ coupon_cost }}</td>
+                          <td></td>
+                        </tr>
+                        <tr>
+                          <td></td>
+                          <td></td>
+                          <td class="bg-lavender"> Cart Total:</td>
+                          <td class="bg-lavender" id="cart_sub_total">&#8377;&nbsp;{{ cart.sub_total }}</td>
+                          <td></td>
+                        </tr>
+                      {% else %}
+                      <tfoot>
+                        <tr id="if_coupon_subtotal"  style="display: none">
+                          <td></td>
+                          <td></td>
+                          <td class="bg-grey">Coupon: <span id="coupon_name"></span></td>
+                          <td class="bg-grey">-&nbsp;<span id="coupon_cost"></span></td>
+                          <td></td>
+                        </tr>
+                        <tr>
+                          <td></td>
+                          <td></td>
+                          <td class="bg-lavender"> Cart Total:</td>
+                          <td class="bg-lavender" id="cart_sub_total">&#8377;&nbsp;{{ cart.sub_total }}</td>
+                          <td></td>
+                        </tr>
+                      </tfoot>
+                      {% endif %}
+                    </table>
+                </div><!-- ./table-responsive -->
+                    <a href="{% url 'userindex' %}" class="btn btn-danger">Continue Shopping</a>
+                    
+                  </div><!-- ./box-body -->
+                </div><!-- ./box -->
+        </div><!-- ./col -->
+      </div><!-- ./row -->
+  </div>
+
+{% else %}
+<div class="container">
+  <div class="text-center" id="empty-cart" style="display:none;" >
+    <h3 class="text-center">You have nothing in your cart.</h3>
+    <a href="{% url 'userindex' %}" class="btn btn-cakemporos">Continue Shopping</a>
+  </div>
+  <div class="small-padding" id="filled-cart">
+  <div class="stepwizard">
+    <div class="stepwizard-row setup-panel">
+        <div class="stepwizard-step">
+            <a href="#step-1" type="button" class="btn btn-cakemporos btn-circle">1</a>
+            <p>Review Cart</p>
+        </div>
+        <div class="stepwizard-step">
+            <a href="#step-2" type="button" class="btn btn-default btn-circle disabled" disabled="disabled">2</a>
+            <p>Delivery Details</p>
+        </div>
+        <div class="stepwizard-step">
+            <a href="#step-3" type="button" class="btn btn-default btn-circle disabled" disabled="disabled">3</a>
+            <p>Make Payment</p>
+        </div>
+    </div>
+</div>
+    <div class="row setup-content" id="step-1">
+    <div class="col-md-10 col-md-offset-1">
+                
+                <div class="box">
+                  <div class="box-body">
+                  <h3 class="text-center"> Review Cart</h3>
+                <hr/>
+                    <div class="table-responsive">
+                  <table class="table text-center" id="cart-table">
+                      <thead class="bg-cakemporos">
+                      <th class="text-center">Item</th>
+                      <th class="text-center">Baker</th>
+                      <th class="text-center">Details</th>
+                      <th class="text-center">Total</th>
+                      <th class="text-center">Action</th>
+                      </thead>
+                      <tbody>
+                        {% for item in cart.cartitem_set.all %}
+                          {% if item.product %}
+                          <tr class="cart_item">
+                            <td><b>{{ item.product }}</b><br/>
+                           </td>
+                            <td>{{ item.product.baker }}</td>
+                            <td>
+                              <table class="centralize">
+                                {% if item.egg_or_eggless %}
+                                <tr>
+                                  <td>
+                                    <b class="pull-right">Egg or Eggless:</b>
+                                  </td>
+                                  <td>
+                                    <span class="pull-left pad-sm-left" id="egg-price{{ item.id }}"> {{ item.egg_or_eggless }}&nbsp;(Cost: &#8377;&nbsp;{{ item.egg_or_eggless_price }})</span>
+                                  </td>
+                                </tr>
+                                {% endif %}
+                                {% if item.weight %}
+                                <tr>
+                                  <td>
+                                    <b class="pull-right">Weight:</b>
+                                  </td>
+                                  <td>
+                                    <span class="pull-left pad-sm-left" id="weight-price"> {{ item.weight }}&nbsp;(Cost: &#8377;&nbsp;{{ item.weight_price }})</span>
+                                  </td>
+                                </tr>
+                                {% endif %}
+                                {% if item.cupcake_qty %}
+                                <tr>
+                                  <td>
+                                    <b class="pull-right">Cupcake Qty:</b> 
+                                  </td>
+                                  <td>
+                                    <span class="pull-left pad-sm-left" id="cupcake-box">{{ item.cupcake_qty }}</span>
+                                  </td>   
+                                </tr>
+                                {% else %}
+                                <tr>
+                                  <td>
+                                    <b class="pull-right">Quantity:</b> 
+                                  </td>
+                                  <td>
+                                    <span class="pull-left pad-sm-left" id="item-qty">{{ item.quantity }}</span>
+                                  </td>   
+                                </tr>
+                                {% endif %}
+                                {% if item.product.product_type.title == "Cake" %}
+                                  {% if item.msg_on_cake %}
+                                    <tr>
+                                      <td>
+                                        <b class="pull-right">Message:</b>
+                                      </td>
+                                      <td>
+                                        <span class="pull-left pad-sm-left">{{ item.msg_on_cake }}</span>
+                                      </td>
+                                    </tr>
+                                    {% else %}
+                                    <tr>
+                                      <td>
+                                        <b class="pull-right">Message:</b>
+                                      </td>
+                                      <td>
+                                       <a href="#" id="update-item{{ item.id }}" data-toggle="modal" data-target="#update-modal{{ item.id }}" class="pull-left pad-sm-left text-froly"> Click to add message on cake
+                              </a>
+                                      </td>
+                                    </tr>
+                                    {% endif %}
+                                    
+
+                                  {% endif %}
+                                {% if item.photo_cake_image %}
+                                <tr>
+                                  <td>
+                                    <b class="pull-right">Photo:</b>
+                                  </td>
+                                  <td>
+                                    <img src="{{ S3_URL}}/{{ item.photo_cake_image }}" height="100px" width="100px"><br/>
+                                    (Cost: &#8377;&nbsp;{{ item.photo_cake_cost }}) 
+                                  </td>
+                                </tr>
+                                {% endif %} 
+                              </table>
+                            </td>
+                            <td>
+                              &#8377;&nbsp;{{ item.cart_item_total }}
+                            </td>
+                            <td>
+                              <a href="#" id="update-item{{ item.id }}" data-toggle="modal" data-target="#update-modal{{ item.id }}">
+                                <i class="fa fa-pencil" data-toggle="tooltip" data-placement="bottom" title="Modify {{ item.product }}"></i>
+                              </a>| 
+                              <a href="#" id="remove-item{{ item.id }}">
+                                <i class="fa fa-times" data-toggle="tooltip" data-placement="bottom" title="Remove {{ item.product }}"></i>
+                              </a>
+                            </td>
+                          </tr>
+                          {% elif item.addon %}
+                            <tr>
+                              <td><b>{{ item.addon }}</b></td>
+                              <td></td>
+                              <td></td>
+                              <td>&#8377;&nbsp;{{ item.addon_price }}</td>
+                              <td><a href="#" id="remove-item{{ item.id }}">
+                                <i class="fa fa-times" data-toggle="tooltip" data-placement="bottom" title="Remove {{ item.addon }}"></i>
+                              </a></td>
+                            </tr>
+                          {% else %}
+                          <tr>
+                              <td><b>{{ item.giftitem }}</b></td>
+                              <td></td>
+                              <td></td>
+                              <td>&#8377;&nbsp;{{ item.giftitem_price }}</td>
+                              <td><a href="#" id="remove-item{{ item.id }}">
+                                <i class="fa fa-times" data-toggle="tooltip" data-placement="bottom" title="Remove {{ item.giftitem }}"></i>
+                              </a></td>
+                            </tr>
+                          {% endif %}
+                        {% endfor %}
+                      </tbody>
+                      <tfoot>
+                      {% if coupon_present == "Yes" %}
+                        <tr>
+                          <td></td>
+                          <td></td>
+                          <td class="bg-grey">Coupon: {{ coupon_code }}</td>
+                          <td class="bg-grey">-&nbsp;{{ coupon_cost }}</td>
+                          <td></td>
+                        </tr>
+                        <tr>
+                          <td></td>
+                          <td></td>
+                          <td class="bg-lavender"> Cart Total:</td>
+                          <td class="bg-lavender" id="cart_sub_total">&#8377;&nbsp;{{ cart.sub_total }}</td>
+                          <td></td>
+                        </tr>
+                      {% else %}
+                      <tfoot>
+                        <tr id="if_coupon_subtotal"  style="display: none">
+                          <td></td>
+                          <td></td>
+                          <td class="bg-grey">Coupon: <span id="coupon_name"></span></td>
+                          <td class="bg-grey">-&nbsp;<span id="coupon_cost"></span></td>
+                          <td></td>
+                        </tr>
+                        <tr>
+                          <td></td>
+                          <td></td>
+                          <td class="bg-lavender"> Cart Total:</td>
+                          <td class="bg-lavender" id="cart_sub_total">&#8377;&nbsp;{{ cart.sub_total }}</td>
+                          <td></td>
+                        </tr>
+                      </tfoot>
+                      {% endif %}
+                      </tfoot>
+                    </table>
+                </div><!-- ./table-responsive -->
+                    
+                    
+                    <div class="row col-md-offset-6 small-padding">
+                    <div id="coupon_success" style="display: none" class="success-note col-md-4">Coupon: <span id="updated_coupon"></span> successfully applied</div><br/>
+                    <div id="coupon_failed" style="display: none" class="danger-note col-md-4"><span id="no_coupon">Please Check the Coupon Code You entered</span></div><br/>
+                    <form id="coupon_form" class="col-md-12">{% csrf_token %}
+                        <div class="col-md-6">
+                          <input type="text" name="couponcode" class="form-control" id="couponcode" placeholder="Enter Coupon Code">    
+                        </div>
+                        <div class="col-md-6">
+                          <input type="submit" class="form-control btn btn-froly" value="Apply">   
+                        </div>
+                    </form>
+                    </div><!-- ./row -->
+                    <div class="giftitems-carousel owl-theme">
+                        {% for item in giftitems %}
+                          <div class="item">
+                            <img src="{{ item.image.url }}" height="200px" width="200px">
+                            <div class="row">
+                              <div class="col-xs-12">
+                                <p class="text-center"><b>{{ item|title }}</b></p>
+                                <p class="text-center"><b>by - {{ item.brand }}</b></p>
+                              </div>
+                              <div class="col-xs-6">
+                                <p><b>&#8377;{{ item.price }}</b></p>
+                              </div>
+                              <div class="col-xs-6">
+                                <a href="{% url 'quick_giftitem_addtocart' item.id %}" class="btn btn-xs btn-cakemporos-outline">Add to Cart</a>
+                              </div>
+                            </div>
+                          </div>
+                        {% endfor %}
+                    </div>
+                    <a href="#" data-toggle="modal" data-target="#addon-modal" class="btn btn-warning btn-lg">Buy Addons</a>
+                    <button class="btn btn-cakemporos nextBtn btn-lg pull-right" type="button" >Next</button>
+                    <div class="small-padding"></div>
+                  </div><!-- ./box-body -->
+                </div><!-- ./box -->
+                
+            
+        </div><!-- /.col -->
+    </div>
+
+    <form method="POST" class="form-horizontal" id="checkout_form">{% csrf_token %}
+      <div class="row setup-content" id="step-2">
+          <div class="col-md-10 col-md-offset-1">
+                  
+                    <div class="box">
+                      <div class="box-body">
+                      <h3 class="text-center">Delivery details</h3>
+                  <hr/>
+                        <div class="row">
+                      <div class="col-md-4 col-md-offset-2">
+                      <div class="form-group">
+                        <label class="control-label">Enter Delivery Date</label>
+                        <input class="form-control" type="text" name="delivery_date" id="delivery-date" required>
+                      </div>
+                    </div>
+                    <div class="col-md-4" id="ifToday" style="display:none;">
+                      <div class="form-group">
+                        <label class="control-label">Enter Delivery Time</label>
+                        <input class="form-control" type="text" name="delivery_time" id="delivery-time">
+                      </div>
+                    </div>
+                    <div class="col-md-4" id="delivery_cost" style="display:none;">
+                      <div class="form-group">
+                        <label class="control-label">Delivery Cost</label>
+                        <input class="form-control" type="hidden" name="delivery_cost" id="deliveryCost">
+                      </div>
+                    </div>
+                    <!-- <div class="col-md-3" id="elseToday" style="display:none;">
+                      <div class="form-group">
+                        <label class="control-label">Enter Delivery Time</label>
+                        <input class="form-control" type="text" name="delivery_time" id="elseToday-delivery-time">
+                      </div>
+                    </div> -->
+                  </div><!-- /.row -->
+                    <div class="row text-center">
+                      <div id="prevAddr" class="col-md-8 col-md-offset-2">  
+                        <div id="new_address_entry"></div>
+                      {% if addresses %}
+                          
+                          <div class="form-group" id="set_new">
+                          <label class="control-label">Select Delivery Address</label>
+                            <select class="form-control" name="prev_shipping_address" id="address_select">
+                              {% for item in addresses %}
+                                <option value="{{ item.user_addresses }}" data-id="{{ item.id }}">{{ item.user_addresses }}</option>
+                              {% endfor %}
+                            </select>
+                          </div>
+                            <button class="btn btn-warning btn-md" id="newAddressBtn" data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#newAddrModal">Enter New Address</button>
+                        {% else %}
+
+                            <div class="form-group" id="set_new">
+                            <label class="control-label">Select Delivery Address</label>
+                            <select class="form-control" name="prev_shipping_address" id="address_select" required>
+                                <option value="" disabled selected >Select Delivery address</option>
+                            </select>
+                          </div>
+                          <p id="enterAddressError" class="text-froly" style="display:none;">Please Enter Address</p>
+                            <button class="btn btn-warning btn-md" id="newAddressBtn" data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#newAddrModal" onclick="checkEmptyFields()">Enter New Address</button>
+                      {% endif %}
+                        
+                    </div>
+                    </div><!-- /.row -->
+                    <button class="btn btn-cakemporos nextBtn btn-lg pull-right" type="button" >Next</button>
+                    <div class="small-padding"></div>
+                      </div><!-- ./box-body -->
+                    </div><!-- ./box -->
+                    
+              </div><!-- col-xs-12 -->
+          </div>
+
+      <div class="row setup-content" id="step-3">
+
+          <div class="col-md-10 col-md-offset-1">
+              <div class="box">
+                <div class="box-body">
+                  <h3 class="text-center">Make Payment</h3>
+              <hr/>
+              <div class="spinner small-padding text-center" id="spinner" style="display:none;">
+                    <img src="{% static 'store/image/Marty.gif' %}">
+                    <b>Please Wait...</b>
+              </div>
+              <div class="row payment-options">
+                  <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                    <div class="box-bordered">
+                      <div class="box-body" id="non_updated_final">
+                        <h4>Cart Details</h4>  
+                        <hr/>
+                        <p id="cartTotal"><b>Cart Total:</b>&nbsp;</p><p id="updateCartTotal"></p></br></br>
+                        <p id="couponDetails"><b>Coupon:</b>&nbsp;</p><p id="updateCouponDetails"></p></br></br>
+                        <p id="deliveryCharge"><b>Delivery Charge:</b>&nbsp;</p><p id="updateDeliveryCost"></p></br></br>
+                        <p class="bg-lavender" style="padding:5px 5px 5px;" id="amountPayable"><b>Amount Payable:</b> &nbsp;<p id="updateAmountPayable" class="bg-lavender" style="padding:5px 5px 5px;"></p></p>
+                        {% comment %}{{ cart.service_charge_value }}{% endcomment %}
+                      </div><!-- box-body -->
+                    </div><!-- ./box -->
+                  </div>
+                  <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                    <div class="box-bordered">
+                      <div class="box-body">
+                        <h4>Delivery Details</h4>
+                        <hr/>
+                        <p><b>Address:</b>&nbsp;<span id="final_delivery_address"></span></p>
+                        <p><b>Delivery Date:</b>&nbsp;<span id="final_delivery_date"></span></p>
+                        <p><b>Delivery Time:</b>&nbsp;<span id="final_delivery_time"></span></p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                    <div class="box-bordered">
+                      <div class="box-body">
+                        <h4>Payment Method</h4>
+                        <ul class="no-bullets">
+                          <li>
+                            <label>
+                              <input type="radio" name="payment_method" value="Cash On Delivery" required>&nbsp; Cash On Delivery
+                            </label>
+                          </li>
+                          <!-- <li id="mobile_verification" style="display:none;">
+                          <div class="form-group">
+                            <label class="control-label">OTP Verification</label>
+                            <input class="form-control" type="name" name="checkout_otp_verification" value="{{ useraccount.phone }}" />
+                          </div>
+                        </li> -->
+                          <!-- <li>
+                            <label>
+                              <input type="radio" name="payment_method" value="online" required>&nbsp; Pay Online
+                            </label>
+                          </li> -->
+                        </ul>
+                        
+                      </div>
+                    </div>
+                  </div>
+
+              </div><!-- /.row -->
+              <input type="submit" class="btn btn-cakemporos nextBtn btn-lg pull-right" value="Place Order">
+              <div class="small-padding"></div>
+                </div><!-- ./box-body -->
+              </div><!-- ./box -->
+          </div>
+      </div>
+    </form>
+  </div>
+  </div><!-- ./container -->
+  {% endif %}
+{% endif %}
+</div><!-- end of main-content -->
+</div><!-- end of wrapper -->
+{% endblock %}
+
+{% block extrajs %}
+<script type="text/javascript" src="{% static 'store/js/checkout.js' %}"></script>
+<script type="text/javascript">
+      $('#newAddrModal').on('shown.bs.modal', function() {
+          $("#flatno").prop('required', true);
+          $("#buildno").prop('required', true);
+          $("#landmark").prop('required', true);
+          $("#new_ship_address").prop('required', true);
+      });
+      removeItem();
+          function removeItem(){
+            $('a[id^=remove-item]').on("click", function(e) { // catch the form's submit event
+              e.preventDefault();
+              var aId = $(this).attr('id');
+              var itemID = aId.substring(11);
+              $(this).closest('tr').remove();
+              $.ajax({
+                url:'/quick_cart/remove/'+itemID+'/',
+                success: function(data) { // on success..
+                    var quick_remove = jQuery.parseJSON(data);
+                      $('#total_cart_items_count').html(quick_remove.get_total_items_count);
+                      $('#cart_sub_total').html('&#8377;'+quick_remove.get_cart_total);
+                      $("#if_coupon_subtotal").css('display','none');
+                        $("#coupon_success").css('display','none');
+                        $("#coupon_failed").css('display','none');
+                        $("#coupon_form").css('display','block');
+                      if (quick_remove.get_total_items_count == 0) {
+                        $("#filled-cart").hide();
+                        $("#empty-cart").show();
+                        
+                      } else {}
+                  }
+              });
+          });
+          };
+      $('#coupon_form').submit(function(e) { // catch the form's submit event
+        e.preventDefault();
+        var submitBtn = $(this).find('input[type=submit]');
+        submitBtn.prop('disabled',true);
+        submitBtn.val('Please Wait...');
+        $.ajax({ // create an AJAX call...
+            data: $(this).serialize(), // get the form data
+            type: 'POST', // GET or POST
+            url: "{% url 'applycoupon' %}",
+            success: function(data) { // on success..
+              var updated_cart_data = jQuery.parseJSON(data);
+              console.log(updated_cart_data);
+              if (updated_cart_data.failed == "False") {
+                $('#coupon_form').css('display', 'block');
+                $('#coupon_failed').css('display', 'block');
+                $('#coupon_success').css('display', 'none');
+              }
+              else {
+                $('#coupon_form').css('display', 'none');
+                $('#coupon_failed').css('display', 'none');
+                $('#coupon_success').css('display', 'block');
+                $('#if_coupon_subtotal').css('display', 'table-row');
+                $('#cart_sub_total').html('&#8377;'+updated_cart_data.sub_total);
+                $('#updated_coupon').html(updated_cart_data.coupon);
+                $('#coupon_name').html(updated_cart_data.coupon);
+                $('#coupon_cost').html('&#8377;'+updated_cart_data.coupon_cost);
+              }
+              submitBtn.prop('disabled',false);
+              submitBtn.val('Apply');
+            },/*end of success*/
+
+            error: function(xhr, status, error) {
+                  $('#errorModal').modal({backdrop:'static', keyboard:false,show:true});
+            }/*  end of error */
+            
+        });
+    });
+  $('#newAddrForm').on('submit', function(e){
+
+                e.preventDefault();
+                $.ajax({
+                    url: "{% url 'user_new_address' %}", // the file to call
+                    type: "POST", // GET or POST
+                    data: $(this).serialize(), // get the form data
+                    success: function(data){
+                    var address_response = jQuery.parseJSON(data);
+                    console.log(address_response);
+                    $('#new_address_entry').addClass('address_list text-center');
+                    $('#set_new').css('display', 'block');
+                    $('#address_select').prepend($('<option>', {
+                        "value": address_response.get_address,
+                        "text": address_response.get_address,
+                        "data-id": address_response.get_address_id,
+                        "selected":"selected",
+                    }));
+                    $('#address_select').find('option:selected').data('id', address_response.get_address_id);
+                    $('#enterAddressError').css('display','none');
+                    setTimeout(function() {
+                      $('#newAddrModal').modal('hide');
+                      }, 800);
+                    },/*./success*/
+                        error: function(xhr, status, error) {
+                              $('#errorModal').modal({backdrop:'static', keyboard:false,show:true});
+                        }/*  end of error */
+                    });
+
+                /*./ajax*/
+            });
+$('.giftitems-carousel').owlCarousel({
+    loop:true,
+    margin:10,
+    responsiveClass:true,
+    responsive:{
+        0:{
+            items:1,
+            nav:true
+        },
+        600:{
+            items:3,
+            nav:false
+        },
+        1000:{
+            items:5,
+            nav:true,
+            loop:false
+        }
+    }
+});
+
+</script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCRcKLBQYizfeHi8fc1GzihE5TK4KTOYEY&libraries=places&region=in&callback=initAutocomplete" async defer></script>
+<script type="text/javascript">
+  // This example displays an address form, using the autocomplete feature
+      // of the Google Places API to help users fill in the information.
+
+      // This example requires the Places library. Include the libraries=places
+      // parameter when you first load the API. For example:
+      // <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places">
+      var placeSearch, autocomplete;
+      function initAutocomplete() {
+        var defaultBounds = new google.maps.LatLngBounds(
+        new google.maps.LatLng(18.897727, 72.810469),
+        new google.maps.LatLng(19.278625, 72.980071));
+        var options = {
+          types: ['geocode'],
+          componentRestrictions: {country: 'in'},
+          strictBounds: true,
+        };
+        // Create the autocomplete object, restricting the search to geographical
+        // location types.
+        autocomplete = new google.maps.places.Autocomplete((document.getElementById('locality')), options);
+        // When the user selects an address from the dropdown, populate the address
+        // fields in the form.
+        autocomplete.addListener('place_changed', onChangeTest);
+      };
+
+      function onChangeTest(textbox){
+          var place = autocomplete.getPlace();
+          for (var i = 0; i < place.address_components.length; i++) {
+          var addressType = place.address_components[i].types[0];
+         
+        }
+      }
+      // Bias the autocomplete object to the user's geographical location,
+      // as supplied by the browser's 'navigator.geolocation' object.
+      function geolocate() {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(function(position) {
+            var geolocation = {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude
+            };
+            var circle = new google.maps.Circle({
+              center: geolocation,
+              radius: position.coords.accuracy
+            });
+            autocomplete.setBounds(circle.getBounds());
+          });
+        }
+      };
+</script>
+{% endblock %}
+
+

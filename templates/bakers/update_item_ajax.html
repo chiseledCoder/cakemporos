@@ -1,0 +1,24 @@
+
+    function updateItem(){
+      $('#update-modals').css('display', 'block');
+      $('form[id^=quickupdate-form]').on('submit', function(e) { // catch the form's submit event
+        e.preventDefault();
+        var message = "Updating Item";
+        console.log(message);
+        $.ajax({ // create an AJAX call...
+            data: $(this).serialize(), // get the form data
+            type: $(this).attr('method'), // GET or POST
+            url: $(this).attr('action'), // the file to call
+            success: function(data) { // on success..
+              var quick_update = jQuery.parseJSON(data);
+                console.log("SUCCESS");
+                console.log(data);
+                console.log(quick_update);
+                $('#item_total' +quick_update.get_cart_item_slug+quick_update.get_cart_item_id).html('&#8377;'+quick_update.get_cart_item_total);
+                $("#cart_total").html('&#8377;'+quick_update.get_cart_total);
+                $('.modal').modal('hide');
+            }
+        });
+        return false;
+      });
+    };

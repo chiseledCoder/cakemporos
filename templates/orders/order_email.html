@@ -1,0 +1,78 @@
+{% load staticfiles %}
+<h2>Hey {{ user_fullname }},</h2>
+<hr/>
+<b style="text-decoration:underline;">Order Details: </b><br/>
+<b>Order ID:</b> {{ order_ship_details.main_order }}<br/>
+<b>Delivery Date:</b> {{ order_ship_details.delivery_date }}<br/>
+<b>Delivery Time:</b> {{ order_ship_details.delivery_time }}<br/>
+<b>Shipping Address:</b> {{ order_ship_details.shipping_address }}<br/>
+<b>Payment Method: </b> {{ order_ship_details.payment_method }}<br/>
+
+<hr/>
+<b style="text-decoration:underline;">Product Details: </b>
+<table>
+	<thead style="background:#EFEFEF;">
+		<th style="width:20%; padding:5px;">
+			Order
+		</th>
+		<th style="width:60%; padding:5px;">
+			Details
+		</th>
+		<th style="width:20%; padding:5px;">
+			Price
+		</th>
+	</thead>
+	<tbody>
+		{% for order_detail in recent_order %}
+			{% for item in cart.cartitem_set.all %}
+				<tr>
+				<td style="padding:5px;">
+					{{ forloop.counter }}
+				</td>
+				<td style="padding:5px;">
+						<b>Product:</b> {{ item.product }} - by {{item.product.baker }}<br/>
+						{% if item.egg_or_eggless %}
+							<b>Egg or Eggless:</b> {{ item.egg_or_eggless }}&nbsp;(Cost: &#8377;&nbsp;{{ item.egg_or_eggless_price }})<br/>
+						{% endif %}
+						{% if item.weight %}
+							<b>Weight:</b> {{ item.egg_or_eggless }}&nbsp;(Cost: &#8377;&nbsp;{{ item.egg_or_eggless_price }})<br/>
+						{% endif %}
+						{% if item.cupcake_qty %}
+							<b>Cupcake boxes:</b> {{ item.cupcake_qty }}
+						{% else %}
+							<b>Quantity: </b> {{ item.quantity }}
+						{% endif %}
+						{% if item.msg_on_cake %}
+							<b>Message on Cake:</b> {{ item.msg_on_cake }}</span>
+						{% endif %}
+						{% if item.photo_cake_image %}
+							<b>Photo Cake:</b>	
+							Yes
+						{% endif %}	
+					
+				</td>
+				<td style="padding:5px;">
+					&#8377;&nbsp;{{ item.cart_item_total }}
+				</td>
+			</tr>
+			{% endfor %}
+		{% endfor %}
+	</tbody>
+	<tfoot>
+		<tfoot>
+			{% if cart.coupon %}
+			<tr>
+				<td style="background-color:#efefef"></td>
+				<td style="background-color:#efefef"></td>
+				<td style="background-color:#A574BF; color:#FFF; padding:5px;">Coupon: &#8377;&nbsp;{{ cart.coupon.coupon_cost }}</td>
+			</tr>
+			{% endif %}
+			<tr>
+				<td style="background-color:#efefef"></td>
+				<td style="background-color:#efefef"></td>
+				<td style="background-color:#A574BF; color:#FFF; padding:5px;">Grand Total: &#8377;&nbsp;{{ cart.total }}</td>
+			</tr>
+		</tfoot>
+	</tfoot>
+
+</table>

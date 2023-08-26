@@ -1,0 +1,95 @@
+{% extends "mydashboard/base.html" %}
+{% load staticfiles %}
+<!DOCTYPE html>
+{% block content %}
+          {% if messages %}
+          <div class="box-body">
+            <div class="alert alert-success alert-dismissable">
+              <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+              {% for message in messages %}
+                <h4>  <i class="icon fa fa-check"></i>{{ message }}</h4>
+              {% endfor %}
+            </div>
+          </div>
+          {% endif %}
+  <section class="content-header">
+          <h1>
+            {{ title }}{{ order }}
+          </h1>
+          <ol class="breadcrumb">
+            <li><a href="{% url 'myadmin_index' %}"><i class="fa fa-tachometer"></i> Dashboard</a></li>
+            <li><a href="{% url 'myadmin_order_index' %}"><i class="fa fa-birthday-cake"></i>Order</a></li>
+            <li><a href="#">{{ title }}</a></li>
+          </ol>
+    </section>
+  <section class="content">
+            <div class="row">
+            <div class="col-md-8">
+              <div class="box box-success">
+                <div class="box-header">
+                  <h3 class="page-header">{{ cart }}</h3>
+                </div><!-- /.box-header -->
+                <div class="box-body table-responsive no-padding">
+                  <table class='table'>
+                    <thead>
+                    <th>Item</th>
+                    <th>Qty</th>
+                    <th>Baker</th>
+                    <th>Price</th>
+                    <th>Details</th>
+                    <th>Delivery Details</th>
+                    </thead>
+                    <tfoot>
+                    <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>Total: {{ cart.total }}</td>
+                    <td></td>
+                    </tr>
+                    </tfoot>
+                    {% for item in cart.cartitem_set.all %}
+
+                    <tr>
+                    <td>{{ item.product }} </td>
+                    <td>{{ item.quantity }}</td>
+                    <td>{{ item.product.baker }}</td>
+                    <td>{{ item.product.price }}</td>
+                    <td><b>Egg Or Eggless:</b> {{ item.egg }}<br>
+                        <b>Weight:</b> {{ item.weight }}<br>
+                        <b>Message on Cake:</b> {{ item.msg_on_cake }}
+                    </td>
+                    <td>
+                  <b>Delivery Date: </b> {{ item.delivery_date }}<br>
+                  <b>Delivery Time: </b> {{ item.delivery_time }}<br>
+                    </td>
+                    <td>
+                      <a href="#" class="btn btn-primary btn.sm">Add to Pickup</a>
+                    </td>
+                    </tr>
+                    {% endfor %}
+                    </table>
+                  
+                </div><!-- /.box-body -->
+              </div><!-- /.box -->
+            </div>
+            <div class="col-md-4">
+            <div class="box box-success">
+                <div class="box-header with-border">
+                  <h3 class="page-header">Delivery Details</h3>
+                </div><!-- /.box-header -->
+                <div class="box-body">
+                    {% for details in order %}
+                  <h5><b>Billing Address: </b>  {{ details.billing_address }}<br/></h5>
+                  <h5><b>Shipping Address: </b>  {{ details.shipping_address }}<br/></h5>
+                  <h5><b>Delivery Method: </b>  {{ details.delivery_method }}<br/></h5>
+                  <h5><b>Payment Method: </b>  {{ details.payment_method }}<br/></h5>
+                    {% endfor %}
+                    <br><br>
+                    <a href="#" class="btn bg-maroon">Generate Invoice</a>
+                </div><!-- /.box-body -->
+              </div><!-- /.box -->
+          </div>
+          </div>         
+          </section><!-- /.content -->
+      {% endblock %}

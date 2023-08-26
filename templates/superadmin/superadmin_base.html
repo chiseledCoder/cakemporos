@@ -1,0 +1,71 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<!--[if IE 8]> <html lang="en" class="ie8 no-js"> <![endif]-->
+<!--[if IE 9]> <html lang="en" class="ie9 no-js"> <![endif]-->
+<!--[if !IE]><!-->
+<html lang="en">
+    <!--<![endif]-->
+    <!-- BEGIN HEAD -->
+
+    <head>
+        <meta charset="utf-8" />
+        <title>Cakemporos Superadmin | {{ site_title }}</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta content="width=device-width, initial-scale=1" name="viewport" />
+        <meta content="Preview page of Metronic Admin Theme #1 for statistics, charts, recent events and reports" name="description" />
+        <meta content="" name="author" />
+        {% include 'superadmin/superadmin_all_css.html' %}
+        {% block extracss %}
+            
+        {% endblock %}
+        <!-- END THEME LAYOUT STYLES -->
+        <link rel="icon" href="https://ce-static-prod.s3.ap-south-1.amazonaws.com/store/image/fav.png" type="image/png"/>
+        <link rel="shortcut icon" href="https://ce-static-prod.s3.ap-south-1.amazonaws.com/store/image/fav.png" type="image/png"/>
+    </head>
+    <!-- END HEAD -->
+
+    <body class="page-header-fixed page-sidebar-closed-hide-logo page-container-bg-solid page-content-white">
+        <div class="page-wrapper">
+            <!-- BEGIN HEADER -->
+                {% include 'superadmin/navbar.html' %}
+            <!-- END HEADER -->
+            <!-- BEGIN HEADER & CONTENT DIVIDER -->
+            <div class="clearfix"> </div>
+            <!-- END HEADER & CONTENT DIVIDER -->
+            <!-- BEGIN CONTAINER -->
+            <div class="page-container">
+                <!-- BEGIN SIDEBAR -->
+                {% include 'superadmin/sidebar.html' %}
+                <!-- END SIDEBAR -->
+                <!-- BEGIN CONTENT -->
+                {% block content %}
+                {% endblock %}
+                <!-- END  CONTENT-->
+            </div>
+            <!-- END CONTAINER -->
+            <!-- BEGIN FOOTER -->
+            <div class="page-footer">
+                <div class="page-footer-inner"> 2016 &copy; Metronic Theme By
+                    <a target="_blank" href="http://keenthemes.com">Keenthemes</a> &nbsp;|&nbsp;
+                    <a href="http://themeforest.net/item/metronic-responsive-admin-dashboard-template/4021469?ref=keenthemes" title="Purchase Metronic just for 27$ and get lifetime updates for free" target="_blank">Purchase Metronic!</a>
+                </div>
+                <div class="scroll-to-top">
+                    <i class="icon-arrow-up"></i>
+                </div>
+            </div>
+            <!-- END FOOTER -->
+        </div>
+        
+        <!-- END QUICK NAV -->
+        <!--[if lt IE 9]>
+<script src="{% static 'superadmin/global/plugins/respond.min.js' %}"></script>
+<script src="{% static 'superadmin/global/plugins/excanvas.min.js' %}"></script> 
+<script src="{% static 'superadmin/global/plugins/ie8.fix.min.js' %}"></script> 
+<![endif]-->
+
+{% include 'superadmin/superadmin_all_js.html' %}
+{% block extrajs %}
+{% endblock %}
+    </body>
+
+</html>

@@ -1,0 +1,240 @@
+/************************************************/
+/***************Login Styles **************/
+/************************************************/
+.login-page, .register-page {
+    position: absolute;
+    display: block;
+    width: 100%;
+    height: 100%;
+    max-height: 100%;
+    min-height: 99%;
+    overflow: hidden;
+    background-attachment: fixed;
+    background-color: #673ab7;
+    background-image: url(/mybaker/images/bg3.png);
+    background-size: cover;
+    color:#FFF;
+}
+.login-box, .register-box{
+  background-color: rgba(0,0,0,0.5);
+}
+.login-box-body, .register-box-body {
+    background:none;
+}
+.login-logo, .register-logo{
+  padding:10px;
+}
+.login-logo a, .register-logo a{
+  color:#FFF;
+}
+.login-box-body, .register-box-body{
+  color:#FFF;
+}
+/************************************************/
+/***************CUSTOM text **************/
+/************************************************/
+.text-cakemporos{
+  color: #662d91;
+}
+.text-royal-blue{
+  color: #436BFF;
+}
+.text-bermuda{
+  color: #7bcbc8;
+}
+/* text-lavender */
+.text-lavender{
+  color: #ff99ee;
+}
+.text-froly{
+  color: #f26e7c;
+}
+.text-black{
+  color:#000;
+}
+/*.text-info{
+  
+  color:#00c0ef;
+}*/
+/************************************************/
+/***************CUSTOM BACKGROUNDS **************/
+/************************************************/
+.bg-cakemporos{
+	background-color: #662d91;
+	color: #FFF;
+}
+.bg-royal-blue{
+	background-color: #436BFF;
+	color: #FFF;
+}
+.bg-bermuda{
+	background-color: #7bcbc8;
+	color: #FFF;
+}
+/* bg-lavender */
+.bg-lavender{
+	background-color: #ff99ee;
+	color: #FFF;
+}
+.bg-froly{
+	background-color: #f26e7c;
+	color: #FFF;
+}
+.bg-green-turquoise{
+  background-color: #36d7b7;
+  color:#FFF;
+}
+.bg-blue-oleo{
+  background-color: #94a0b2;
+  color:#FFF;
+}
+.bg-yellow-casablanca{
+  background-color: #F2784B;
+  color:#FFF;
+}
+/************************************************/
+/*************END OF CUSTOM BACKGROUNDS *********/
+/************************************************/
+
+/************************************************/
+/***************BOX SETTINGS ********************/
+/************************************************/
+.box.box-cakemporos {
+    border-top-color: #662D91;
+}
+.box.box-solid.box-cakemporos{
+    border:1px solid #662D91; 
+}
+.box.box-solid.box-cakemporos>.box-header{
+    color: #FFF;
+    background: #662D91;
+    background-color: #662D91;
+}
+.box-header{
+  border-top-right-radius:3px; 
+  border-top-left-radius:3px;
+}
+
+/************************************************/
+/*************END OF BOX SETTINGS ***************/
+/************************************************/
+
+/********************************/
+/********CUSTOM BUTTONS *********/
+/********************************/
+/*Btn Froly */
+.btn:hover,
+.btn:active,
+.btn.hover{
+  -webkit-transition: background-color .6s ease-in-out;
+    -moz-transition: background-color .6s ease-in-out;
+    -o-transition: background-color .6s ease-in-out;
+    -ms-transition: background-color .6s ease-in-out;
+    transition: background-color .6s ease-in-out;
+}
+.btn-cakemporos {
+  background-color: #662D91;
+  border-color: #662D91;
+  color:#FFF;
+}
+.btn-cakemporos:hover,
+.btn-cakemporos:active,
+.btn-cakemporos.hover {
+  background-color: #8456a7;
+  border-color: #662D91;
+  color:#FFF;
+}
+.btn-froly {
+  background-color: #ff948c;
+  border-color: #f26e7c;
+  color:#FFF;
+}
+.btn-froly:hover,
+.btn-froly:active,
+.btn-froly.hover {
+  background-color: #f26e7c;
+  color:#FFF;
+}
+/*Btn royal blue */
+.btn-royal-blue {
+  background-color: #436BFF;
+  border-color: #0434e0;
+  color:#FFF;
+}
+.btn-royal-blue:hover,
+.btn-royal-blue:active,
+.btn-royal-blue.hover {
+  background-color: #0434e0;
+  color:#FFF;
+}
+/********************************/
+/*** END OF CUSTOM BUTTONS ******/
+/********************************/
+
+
+/********************************/
+/* Select2 flat design hack for multiple select and single select */
+/********************************/
+.select2-container--default .select2-selection--single {
+	border-radius: 0px;
+}
+.select2-container--bootstrap .select2-results__option--highlighted[aria-selected]{
+  background-color: #662D91;
+}
+.select2-container--default .select2-selection--multiple{
+	border-radius: 0px;
+}
+.select2-container--default .select2-search--inline .select2-search__field{
+	width: 100% !important;
+}
+
+/********************************/
+/* Datatable sort icon FontAwesome Hack */
+/********************************/
+table.dataTable thead th {
+    position: relative;
+    background-image: none !important;
+}
+ 
+table.dataTable thead th.sorting:after,
+table.dataTable thead th.sorting_asc:after,
+table.dataTable thead th.sorting_desc:after {
+    position: absolute;
+    top: 12px;
+    right: 8px;
+    display: block;
+    font-family: FontAwesome;
+}
+table.dataTable thead th.sorting:after {
+    content: "\f0dc";
+    color: #ddd;
+    font-size: 0.8em;
+    padding-top: 0.12em;
+}
+table.dataTable thead th.sorting_asc:after {
+    content: "\f0de";
+}
+table.dataTable thead th.sorting_desc:after {
+    content: "\f0dd";
+}
+
+/********************************/
+/* END OF Datatable sort icon FontAwesome Hack */
+/********************************/
+
+
+/********************************/
+/* Order Details Page */
+/********************************/
+
+.order-product-img {
+    margin: 0 auto;
+    width: 200px;
+    padding: 3px;
+    border: 3px solid #d2d6de;
+}
+.photocake-img {
+    width: 150px;
+    padding: 3px;
+    border: 3px solid #d2d6de;
+}

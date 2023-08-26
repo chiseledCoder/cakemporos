@@ -1,0 +1,144 @@
+{% extends 'mybaker/base.html' %}
+{% load staticfiles %}
+{% block content %}
+<section class="content-header">
+      <h1>
+        Order ID: {{ get_order }}
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="{% url 'mybaker_dashboard' %}"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="{% url 'mybaker_orders_list' %}">Orders</a></li>
+        <li><a href="#">{{ get_order }}</a></li>
+      </ol>
+</section>
+<div class="content">
+  <div class="row">
+    <div class="col-md-4 col-sm-4 col-xs-12">
+      <div class="box box-cakemporos">
+    <div class="box-header">
+      <h3 class="box-title"> Product Details </h3>
+      <div class="box-tools pull-right">
+      {% if get_order.status == "Pending" %}
+      Update Status:&nbsp;
+        <a href="#" class="label label-default pull-right" data-toggle="modal" data-target="#orderdetail{{ get_order }}">{{ get_order.status }}</a>
+      {% elif get_order.status == "Confirmed" %}
+      Update Status:&nbsp;
+        <a href="#" class="label label-primary pull-right" data-toggle="modal" data-target="#orderdetail{{ get_order }}">{{ get_order.status }}</a>
+      {% elif get_order.status == "Shipped" %}
+      Update Status:&nbsp;
+        <a href="#" class="label label-info pull-right" data-toggle="modal" data-target="#orderdetail{{ get_order }}">{{ get_order.status }}</a>
+      {% elif get_order.status == "Complete" %}
+      Update Status:&nbsp;
+       <a href="#" class="label label-success pull-right" data-toggle="modal" data-target="#orderdetail{{ get_order }}">{{ get_order.status }}</a>
+      {% elif get_order.status == "Cancelled" %}
+      Update Status:&nbsp;
+        <a href="#" class="label label-danger pull-right" data-toggle="modal" data-target="#orderdetail{{ get_order }}">{{ get_order.status }}</a>
+      {% elif get_order.status == "Baking" %}
+      Update Status:&nbsp;
+        <a href="#" class="label label-warning pull-right" data-toggle="modal" data-target="#orderdetail{{ get_order }}">{{ get_order.status }}</a>
+      {% elif get_order.status == "Ready" %}
+        <a href="#" class="label bg-purple pull-right" data-toggle="modal" data-target="#orderdetail{{ get_order }}">{{ get_order.status }}</a>
+      {% endif %}
+      </div>
+      <br/><br/>
+      
+      
+    </div>
+    <div class="box-body box-profile">
+      <img class="order-product-img img-responsive img-square" src="{{ get_order.cartitem.product.image.url }}" alt="Product Image"/>
+      <h3 class="profile-username text-center">{{ get_order.cartitem.product }}</h3>
+      <ul class="list-group list-group-bordered">
+        <li class="list-group-item">
+          <b>Quantity:</b> {{ get_order.cartitem.quantity }}
+        </li>
+        <li class="list-group-item">
+          <b>Egg Or Eggless:</b> {{ get_order.cartitem.egg_or_eggless }}
+        </li>
+        {% if get_order.cartitem.weight is not None %}
+        <li class="list-group-item">
+          <b>Weight:</b> {{ get_order.cartitem.weight }}
+        </li>
+        {% endif %}
+        {% if get_order.cartitem.cupcake_qty is not None %}
+        <li class="list-group-item">
+          <b>Box(s):</b> {{ get_order.cartitem.cupcake_qty }}
+        </li>
+        {% endif %}
+        {% if get_order.cartitem.msg_on_cake %}
+        <li class="list-group-item">
+          <b>Message on Cake:</b> {{ get_order.cartitem.msg_on_cake }}
+        </li>
+        {% endif %}
+        {% if get_order.cartitem.photo_cake_image %}
+        <li class="list-group-item">
+          <b>Photo Cake:</b> <img src="{{ get_order.cartitem.photo_cake_image.url }}" class="photocake-img img-responsive img-square"><br/>
+          <a href="{{ get_order.cartitem.photo_cake_image.url }}" class="btn btn-primary" download ><i class="fa fa-download"></i>&nbsp;Download</a>
+        </li>
+        {% endif %}
+      </ul>
+
+    </div><!-- /.box-body -->
+  </div><!-- /.box -->
+    </div><!-- /.col -->
+   <div class="col-md-4 col-sm-4 col-xs-12">
+<div class="box box-cakemporos">
+    <div class="box-header">
+      <h3 class="box-title"> Delivery Details </h3>
+    </div>
+    <div class="box-body">
+      <ul class="list-group list-group-bordered">
+        {% if get_shipping.delivery_date %}
+            <li class="list-group-item">
+              <b>Delivery Date: </b>{{ get_shipping.delivery_date }}
+            </li>
+        {% endif %}
+        {% if get_shipping.delivery_time %}
+            <li class="list-group-item">
+              <b>Delivery Time: </b>{{ get_shipping.delivery_time }}
+            </li>
+        {% endif %}
+        {% if get_shipping.shipping_address %}
+            <li class="list-group-item">
+              <b>Delivery Address: </b>{{ get_shipping.shipping_address }}
+            </li>
+        {% endif %}
+      </ul>
+    </div><!-- /.box-body -->
+  </div><!-- /.box -->
+    </div><!-- /.col -->
+
+     <div class="col-md-4 col-sm-4 col-xs-12">
+<div class="box box-cakemporos">
+    <div class="box-header">
+      <h3 class="box-title"> Payout Details </h3>
+    </div>
+    <div class="box-body">
+      <ul class="list-group list-group-bordered">
+        <li class="list-group-item">
+          <b>Weight Price: </b>{{ get_order.cartitem.weight_price }}
+        </li>
+        <li class="list-group-item">
+          <b>Egg or Eggless Price: </b>{{ get_order.cartitem.egg_or_eggless_price }}
+        </li>
+        <li class="list-group-item">
+          <b>Egg or Eggless Price: </b>{{ get_order.cartitem.egg_or_eggless_price }}
+        </li>
+        <li class="list-group-item">
+          <b>Product Total: </b>{{ get_order.cartitem.cart_item_total }}
+        </li>
+        <li class="list-group-item">
+          <b>Cakemporos Commission: </b>{{ get_order.cartitem.commission_percentage }}
+        </li>
+        <li class="list-group-item bg-maroon">
+          <b>Amount Payable: </b>{{ get_order.cartitem.payout_amount }}
+        </li>
+      </ul>
+     
+    </div><!-- /.box-body -->
+  </div><!-- /.box -->
+    </div><!-- ./col -->
+  </div><!-- /.row -->
+</div><!-- end of content  -->
+{% endblock %}
+{% block extrajs %}
+{% endblock %}

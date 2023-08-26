@@ -1,0 +1,48 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+<head>
+	<title> Cakemporos | Myadmin</title>
+	{% include 'mydashboard/all_css.html'%}
+</head>
+<body class="skin-blue sidebar-mini">
+	<header class="main-header">
+		{% include 'mydashboard/navbar.html'%}
+	</header>
+	<aside class="main-sidebar">
+	{% include 'mydashboard/sidebar.html'%}
+	</aside>
+	<div class="content-wrapper">
+		<section class="content-header">
+          <h1>
+            Bakers
+          </h1>
+          <ol class="breadcrumb">
+            <li><a href="../"><i class="fa fa-tachometer"></i> Dashboard</a></li>
+            <li><a href="#"><i class="fa fa-birthday-cake"></i>Baker</a></li>
+          </ol>
+        </section>
+        <section class="content">
+        	<div class="row">
+            <!-- left column -->
+            	<div class="col-md-8">
+              <!-- general form elements -->
+              		<div class="box box-primary">
+               			<div class="box-header with-border" style="padding=10px">
+                  			<h3 class="box-title">Register New Baker</h3>
+                		</div><!-- /.box-header -->
+                		{% load crispy_forms_tags %}
+                		<form method="POST" action="">{% csrf_token %}
+                			{{ form|crispy }}
+		                	<div class="box-footer">
+                    			<input type="submit" value="Add Baker"/>
+                  			</div>
+                		</form>
+                	</div>
+                </div>
+            </div>
+        </section>
+    {% include 'mydashboard/all_js.html'%}
+</body>
+</html>
+

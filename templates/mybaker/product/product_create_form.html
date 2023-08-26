@@ -1,0 +1,28 @@
+{% extends "mydashboard/base.html" %}
+{% load staticfiles %}
+<!DOCTYPE html>
+{% block content %}
+    <section class="content-header">
+          <h1>
+            Products
+          </h1>
+          <ol class="breadcrumb">
+            <li><a href="../"><i class="fa fa-tachometer"></i> Dashboard</a></li>
+            <li><a href="#"><i class="fa fa-birthday-cake"></i>Baker</a></li>
+          </ol>
+        </section>
+        <section class="content">
+          <div class="row">
+            <!-- left column -->
+              <div class="col-md-6">
+              <!-- general form elements -->
+                  <div class="box box-primary">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">{{ title }} {{ object }}</h3>
+                    </div><!-- /.box-header -->
+                    {% load crispy_forms_tags %}
+                    {% crispy form %}
+                  </div>
+                </div>
+        </section>
+{% endblock %}

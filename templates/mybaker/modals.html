@@ -1,0 +1,114 @@
+{% for item in baker_orders %}
+  <div class="modal fade
+  {% if item.status == 'Pending' %} 
+    modal-default
+  {% elif item.status == 'Cancelled' %}
+    modal-danger 
+  {% elif item.status == 'Confirmed' %}
+    modal-info
+  {% elif item.status == 'Ready' %}  
+    modal-success
+  {% elif item.status == 'Complete' %}  
+    modal-primary
+  {% elif item.status == 'Baking' %}  
+    modal-warning
+    {% elif item.status == 'Shipped' %}  
+    modal-success
+   {% endif %}" id="orderdetail{{ item.order_id }}" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">x</span></button>
+        <h4 class="modal-title text-center" id="loginModelLabel">Order {{ item.order_id }}</h4>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-8 col-md-offset-2">
+            <div class="text-center cartitem_details">
+              <b class="">Product:</b>
+                    
+            <span class=" pad-sm-left" id="egg-price{{ itemcartitem..id }}"> {{ item.cartitem.product }}</span><br/>
+                    
+        {% if item.cartitem.egg_or_eggless %}
+                  
+            <b class="">Egg or Eggless:</b>
+                    
+            <span class=" pad-sm-left" id="egg-price{{ itemcartitem..id }}"> {{ item.cartitem.egg_or_eggless }}&nbsp;(Cost: &#8377;&nbsp;{{ item.cartitem.egg_or_eggless_price }})</span><br/>
+                    
+        {% endif %}
+          {% if item.cartitem.weight %}
+                  
+            <b class="">Weight:</b>
+                    
+            <span class=" pad-sm-left" id="weight-price"> {{ item.cartitem.weight }}&nbsp;(Cost: &#8377;&nbsp;{{ item.cartitem.weight_price }})</span><br/>
+                    
+        {% endif %}
+          {% if item.cartitem.cupcake_qty %}
+                  
+            <b class="">Cupcake Qty:</b> 
+                    
+            <span class=" pad-sm-left" id="cupcake-box">{{ item.cartitem.cupcake_qty }}</span><br/>
+                    
+        {% else %}
+                  
+            <b class="">Quantity:</b> 
+                    
+            <span class=" pad-sm-left" id="item-qty">{{ item.cartitem.quantity }}</span><br/>
+                    
+        {% endif %}
+          {% if item.cartitem.product.product_type.title == "Cake" %}
+            {% if item.cartitem.msg_on_cake %}
+                      
+                <b class="">Message:</b>
+                        
+                <span class=" pad-sm-left">{{ item.cartitem.msg_on_cake }}</span><br/>
+                        
+            {% endif %}
+            {% endif %}
+          {% if item.cartitem.photo_cake_image %}
+                  
+            <b class="">Photo:</b>
+                    
+            <img src="{{ item.cartitem.photo_cake_image.url }}" height="100px" width="100px"><br/>
+              (Cost: &#8377;&nbsp;{{ item.cartitem.photo_cake_cost }}) 
+                    
+        {% endif %} 
+            </div>
+                            
+          </div>
+        </div>
+        
+        {% if item.status == "Complete" %}
+        {% elif item.status == "Cancelled" %}
+        {% else %}
+        <hr/>
+          <form id="status_update{{ item.order_id }}" method="POST" action="{% url 'mybaker_order_status_update' item.order_id %}">
+          <div class="form-group">
+            <label class="control-label">
+              Update Status
+            </label>
+            <select class="form-control" name="order_status">
+              {% if item.status == "Pending" %} 
+              <option value="Confirmed">Confirm</option>
+              <option value="Cancelled">Cancel</option>    
+              {% elif item.status == "Confirmed" %}
+                <option value="Baking">Baking</option>   
+              {% elif item.status == "Baking" %}       
+                <option value="Ready">Ready</option>  
+              {% elif item.status == "Ready" %}       
+                <option value="Shipped">Ship</option>  
+                {% elif item.status == "Shipped" %}       
+                <option value="Complete">Complete</option>  
+              {% endif %}"          
+            </select>
+          </div>
+          <div class="form-group">
+            <input type="submit" name="" class="btn btn-block btn-cakemporos" value="Submit">
+          </div>
+        </form>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endfor %}

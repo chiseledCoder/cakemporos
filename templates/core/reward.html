@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block reward_facebook_share %}
+	<meta property="og:url"           content="http://www.cakemporos.in" />
+	<meta property="og:type"          content="website" />
+	<meta property="og:title"         content="Cakmeporos" />
+	<meta property="og:description"   content="Use my reward code '{{ useraccount.reward_id }}' to get assured gift on cake order from  Cakemporos!" />
+	<meta property="og:image"         content="https://test-s3-heroku.s3.ap-south-1.amazonaws.com/store/image/main-logo.png" />
+{% endblock %}
+
+{% block content %}
+	<div class="wrapper">
+    	<div id="main-content">
+    		<div class="container">
+    			<section>
+	    			<div class="page-title text-center">
+	    				<h3 class="text-cakemporos"><span>R</span>eward <span>C</span>ode</h3>	
+	    			</div>
+	    		</section>
+	    		<section>
+	    			<div class="text-center small-padding">
+	    				<h2>{{ useraccount.reward_id }}</h2>
+	    				<h5>Share code with your friends</h5>
+	    				<h6>You and your friend both get an assured gift upon his successful order.</h6>
+	    				<p>* T&amp;C applied</p>
+	    				<!-- <ul class="no-bullets social-icons text-center">
+	    					<li>
+	    						<a href="whatsapp://send?text=The text to share!" data-action="share/whatsapp/share"><img src="{% static 'store/image/whatsapp.png' %}" height="50" width="50" />
+	    					</li>
+	    					<li>
+	    						<div class="fb-share-button" 
+									data-href="http://www.cakemporos.in/" 
+									data-layout="button_count">
+								</div>
+	    					</li>
+	    					<li>
+	    						<a href="whatsapp://send?text=The text to share!" data-action="share/whatsapp/share"><img src="{% static 'store/image/twitter1.png' %}" height="50" width="50" />
+	    					</li>
+	    					<li>
+	    						<a href="whatsapp://send?text=The text to share!" data-action="share/whatsapp/share"><img src="{% static 'store/image/message.png' %}" height="50" width="50" />
+	    					</li>
+	    					
+	    				</ul> -->
+	    				<a href="{% url 'userindex' %}" class="btn btn-cakemporos">Continue Shopping</a>
+	    			</div>
+	    		</section>
+    		</div>
+    	</div>
+    </div>
+{% endblock %}

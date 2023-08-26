@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+
+
+
+{% block content %}
+<div class="wrapper">
+	<div id="main-content">
+		<div class="container">
+<div class='col-sm-12'>
+{% if empty %}
+
+<h1 style='text-align:center;'>{{ empty_message }}</h1>
+
+{% else %}
+<div class="small-padding"></div>
+<div class="panel panel-cakemporos">
+	<div class="panel-heading">
+		<div class="row">
+			<div class="col-md-4 col-xs-6">
+				<h4 class="panel-title">Cart {{ get_total_items }}</h4>
+			</div>
+		</div>
+	</div>
+	<div class="panel-body">
+	{% if get_total_items == 0 %}
+		<h3 class="text-center">Ooops! No confectionery's added!</h3>
+	{% else %}
+	<div class="table-responsive">
+			<table class="table text-center">
+				<thead>
+				<th class="text-center">Item</th>
+				<th class="text-center">Baker</th>
+				<th class="text-center">Details</th>
+				<th class="text-center">Total</th>
+				<th class="text-center">Action</th>
+				</thead>
+				<tbody>
+					{% for item in cart.cartitem_set.all %}
+						<tr>
+							<td><b>{{ item.product }}</b><br/>
+							<a href="#" data-toggle="modal" data-target="#update-modal">Update</a></td>
+							<td>{{ item.product.baker }}</td>
+							<td>
+								<table class="centralize">
+									{% if item.egg_or_eggless %}
+									<tr>
+										<td>
+											<b class="pull-right">Egg or Eggless:</b>
+										</td>
+										<td>
+											<span class="pull-left pad-sm-left"> {{ item.egg_or_eggless }}&nbsp;(Cost: &#8377;&nbsp;{{ item.egg_or_eggless_price }})</span>
+										</td>
+									</tr>
+									{% endif %}
+									{% if item.weight %}
+									<tr>
+										<td>
+											<b class="pull-right">Weight:</b>
+										</td>
+										<td>
+											<span class="pull-left pad-sm-left"> {{ item.weight }}&nbsp;(Cost: &#8377;&nbsp;{{ item.weight_price }})</span>
+										</td>
+									</tr>
+									{% endif %}
+									{% if item.cupcake_qty %}
+									<tr>
+										<td>
+											<b class="pull-right">Cupcake Qty:</b> 
+										</td>
+										<td>
+											<span class="pull-left pad-sm-left">{{ item.cupcake_qty }}</span>
+										</td>		
+									</tr>
+									{% else %}
+									<tr>
+										<td>
+											<b class="pull-right">Quantity:</b> 
+										</td>
+										<td>
+											<span class="pull-left pad-sm-left">{{ item.quantity }}</span>
+										</td>		
+									</tr>
+									{% endif %}
+									{% if item.msg_on_cake %}
+									<tr>
+										<td>
+											<b class="pull-right">Message:</b>
+										</td>
+										<td>
+											<span class="pull-left pad-sm-left">{{ item.msg_on_cake }}</span>
+										</td>
+									</tr>
+									{% endif %}
+									{% if item.photo_cake_image %}
+									<tr>
+										<td>
+											<b class="pull-right">Photo:</b>
+										</td>
+										<td>
+											<img src="/media/{{ MEDIA_URL }}{{ item.photo_cake_image }}" height="100px" width="100px"><br/>
+											(Cost: &#8377;&nbsp;{{ item.photo_cake_cost }})	
+										</td>
+									</tr>
+									{% endif %}	
+								</table>
+							</td>
+							<td>
+								&#8377;&nbsp;{{ item.cart_item_total }}
+							</td>
+							<td>
+								<a data-toggle="tooltip" data-placement="bottom" title="Delete {{ item.product }}" class="btn btn-danger" href="{% url 'remove_from_cart' item.id %}"><i class="fa fa-trash"></i></a>
+							</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+				<tfoot>
+					<tr>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td class="grand-total">Grand Total: &#8377;&nbsp;{{ cart.total }}</td>
+						<td></td>
+					</tr>
+				</tfoot>
+			</table>
+		</div>
+		<a class="btn btn-cakemporos-outline" href="{% url 'checkout' %}">Checkout</a>
+	{% endif %}
+	</div>
+</div>
+
+
+<br/>
+<div class="pull-right">
+	<a class="btn btn-default btn-space" href="{% url 'userindex' %}">Continue Shopping</a>
+	{% if get_total_items != 0 %}
+		<a class="btn btn-cakemporos-outline" href="{% url 'checkout' %}">Checkout</a>
+	{% endif %}
+</div>
+{% endif %}
+</div>
+
+</div>
+
+	</div>
+</div>
+{% endblock %}
+{% block extrajs %}
+<script type="text/javascript">
+	$("[data-toggle=tooltip]").tooltip();
+</script>
+{% endblock %}

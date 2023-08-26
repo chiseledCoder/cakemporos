@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+	<div class="container">
+	{% if messages %}
+          <div class="box-body">
+            <div class="alert alert-success alert-dismissable">
+              <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+              {% for message in messages %}
+                <h4>  <i class="icon fa fa-check"></i>{{ message }}</h4>
+              {% endfor %}
+            </div>
+          </div>
+    {% endif %}
+		<div class="row"> 
+			<div class="col-md-9 col-xs-6">
+			 {% crispy form %}
+			</div>
+		</div>
+	</div>
+{% endblock %}

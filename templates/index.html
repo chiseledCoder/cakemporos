@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block extracss %}
+<style type="text/css">
+  .tooltip{
+    margin-left: 50%; 
+  }
+  .tooltip > .tooltip-inner { 
+      padding: 15px;
+      font-size: 14px;
+  }
+</style>
+{% endblock %}
+    {% block content %}
+  <div class="wrapper">
+    <div id="main-content">
+      <section class="home big-padding" >
+    <div class="container">
+    <div class="row">
+      <div class="text-center">
+      <h2 class="home-title">Order Cake of Your Choice Now Online!</h2>
+      <h3 class="home-title">Get it Delivered in Mumbai and Thane!</h3>
+      <form role="search" action='/s/' class="locality-search-form">
+        <div class="input-group">
+          <select class="form-control" id="locality" name="q" style="width: 100%" data-toggle="tooltip" title="Select Area/Locality First">
+          <option value="-1" selected="selected">Select Area/Locality</option>
+            {% for item in localities %}<option value="{{ item }}">{{ item }}</option>{% endfor %}
+          </select>
+        </div>
+        <div class="tiny-padding">
+          <button class="btn btn-cakemporos" id="start-ordering" type="submit">Start Ordering</button>
+        </div>
+      </form>
+    </div>
+    </div><!-- row -->
+  </div><!-- ./container -->
+  </section>
+  <section class="offers centralize text-center">
+    
+    <div class="container">
+      <div class="row">
+      <div class="col-md-3 col-sm-6 col-xs-12 service-icons">
+         <a href="{% url 'about' %}">
+            <img src="{% static 'store/image/fresh-cake.png' %}">
+            <h5> Freshly Baked Cakes</h5>
+            <p>Our curated bakers bake your cake upon your order arrival.</p>
+         </a>
+      </div>
+      <div class="col-md-3 col-sm-6 col-xs-12 service-icons">
+         <a href="{% url 'delivery' %}">
+           <img src="{% static 'store/image/van.png' %}">
+            <h5> Assured Delivery</h5>
+            <p>Every rider of ours are well trained for delivering cakes.</p>
+         </a>
+      </div>
+      <div class="col-md-3 col-sm-6 col-xs-12 service-icons">
+          <a href="{% url 'corporate' %}">
+            <img src="{% static 'store/image/corporate.png' %}">
+            <h5>Corporate Orders</h5>
+            <p>Get cakes delivered at your office door.</p>
+          </a>
+      </div>
+      <div class="col-md-3 col-sm-6 col-xs-12 service-icons">
+         <a href="javascript:void(0)">
+            <img src="{% static 'store/image/crown.png' %}">
+            <h5> Reward Program</h5>
+            <p>You and your friend get an assured gift upon his successful order.</p>
+         </a>
+      </div>
+    </div><!-- ./row -->
+    </div><!-- container -->
+  </section>
+    <div class="small-padding"></div>
+    </div>
+  </div>
+
+   
+{% endblock %}
+
+{% block extrajs %}
+    <script type="text/javascript">
+      $( "#locality" ).select2({
+    placeholder: {
+    id: "-1",
+    text: "Select Area/Locality",
+    },
+    allowClear:true,
+    theme: "bootstrap",
+});
+    $(document).ready(function () {
+      $('#start-ordering').click(function () {
+        // body...
+        if ($('#locality').val() == "-1") {
+        $('#start-ordering').prop('disabled', true);
+        $("[data-toggle='tooltip']").tooltip('show');
+      }
+      else{
+        $('#start-ordering').prop('disabled', false);
+        $("[data-toggle='tooltip']").tooltip('hide');
+      }
+      });
+      $('#locality').change(function () {
+        if ($('#locality').val() == "-1") {
+        $('#start-ordering').prop('disabled', true);
+        $("[data-toggle='tooltip']").tooltip('show');
+      }
+      else{
+        $('#start-ordering').prop('disabled', false)
+        $("[data-toggle='tooltip']").tooltip('hide');
+      }
+      })
+    });
+    </script>
+ {% endblock %}

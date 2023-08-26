@@ -1,0 +1,653 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% block extracss %}
+<style type="text/css">
+.address_list .radio-label {
+  font-size: 14px;
+  font-weight: normal;
+  padding: 4px 30px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: none;
+}
+
+
+.address_list .radio-label input[type=radio] {
+  display: none;
+}
+
+.address_list .radio-label:hover {
+  font-size:14px;
+  font-weight: normal;
+  background-color: #428bca;
+  color: white;
+  cursor: pointer;
+
+}
+
+.address_list .radio-label-selected {
+  font-size:14px;
+  font-weight: normal;
+  background-color: #428bca;
+  color: white;
+  cursor: pointer;
+}
+
+</style>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<!-- remove this if you use Modernizr -->
+    <script>(function(e,t,n){var r=e.querySelectorAll("html")[0];r.className=r.className.replace(/(^|\s)no-js(\s|$)/,"$1js$2")})(document,window,0);</script>
+{% endblock %}
+{% block content %}
+<div class="container">
+  <div class="small-padding">
+    <div class="col-md-12">
+      <div class="small-padding">
+      {% if get_total_items == 0 %}
+        <div class="text-center">
+          <h3 class="text-center">Ooops! No confectionery's added!</h3>
+          <a href="{% url 'userindex' %}" class="btn btn-froly">Continue Shopping</a>
+        </div>
+      {% else %}
+          <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+            <div class="panel panel-cakemporos" id="panel1">
+              <div class="panel-heading" role="tab" id="headingOne">
+                <h4 class="panel-title">
+                  <a class="collapsed" role="button" id="updateCartPanel" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                    Cart
+                  </a>
+                </h4>
+              </div>
+              <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                <div class="panel-body">
+                  <div class="text-center"  id="count-zero-msg" style="display:none;">
+                      <h3 class="text-center">Ooops! No confectionery's added!</h3>
+                      <a href="{% url 'userindex' %}" class="btn btn-froly">Continue Shopping</a>
+                  </div>
+                    <table class="table text-center" id="cart-table">
+                      <thead>
+                      <th class="text-center">Item</th>
+                      <th class="text-center">Baker</th>
+                      <th class="text-center">Details</th>
+                      <th class="text-center">Total</th>
+                      <th class="text-center">Action</th>
+                      </thead>
+                      <tbody>
+                        {% for item in cart.cartitem_set.all %}
+                          <tr>
+                            <td><b>{{ item.product }}</b><br/>
+                            <a href="#" data-toggle="modal" data-target="#update-modal">Update</a></td>
+                            <td>{{ item.product.baker }}</td>
+                            <td>
+                              <table class="centralize">
+                                {% if item.egg_or_eggless %}
+                                <tr>
+                                  <td>
+                                    <b class="pull-right">Egg or Eggless:</b>
+                                  </td>
+                                  <td>
+                                    <span class="pull-left pad-sm-left" id="egg-price{{ item.id }}"> {{ item.egg_or_eggless }}&nbsp;(Cost: &#8377;&nbsp;{{ item.egg_or_eggless_price }})</span>
+                                  </td>
+                                </tr>
+                                {% endif %}
+                                {% if item.weight %}
+                                <tr>
+                                  <td>
+                                    <b class="pull-right">Weight:</b>
+                                  </td>
+                                  <td>
+                                    <span class="pull-left pad-sm-left" id="weight-price"> {{ item.weight }}&nbsp;(Cost: &#8377;&nbsp;{{ item.weight_price }})</span>
+                                  </td>
+                                </tr>
+                                {% endif %}
+                                {% if item.cupcake_qty %}
+                                <tr>
+                                  <td>
+                                    <b class="pull-right">Cupcake Qty:</b> 
+                                  </td>
+                                  <td>
+                                    <span class="pull-left pad-sm-left" id="cupcake-box">{{ item.cupcake_qty }}</span>
+                                  </td>   
+                                </tr>
+                                {% else %}
+                                <tr>
+                                  <td>
+                                    <b class="pull-right">Quantity:</b> 
+                                  </td>
+                                  <td>
+                                    <span class="pull-left pad-sm-left" id="item-qty">{{ item.quantity }}</span>
+                                  </td>   
+                                </tr>
+                                {% endif %}
+                                {% if item.product.category.title == "Cake" %}
+                                  {% if item.msg_on_cake %}
+                                    <tr>
+                                      <td>
+                                        <b class="pull-right">Message:</b>
+                                      </td>
+                                      <td>
+                                        <span class="pull-left pad-sm-left">{{ item.msg_on_cake }}</span>
+                                      </td>
+                                    </tr>
+                                    {% endif %}
+                                {% endif %}
+                                {% if item.photo_cake_image %}
+                                <tr>
+                                  <td>
+                                    <b class="pull-right">Photo:</b>
+                                  </td>
+                                  <td>
+                                    <img src="/media/{{ MEDIA_URL }}{{ item.photo_cake_image }}" height="100px" width="100px"><br/>
+                                    (Cost: &#8377;&nbsp;{{ item.photo_cake_cost }}) 
+                                  </td>
+                                </tr>
+                                {% endif %} 
+                              </table>
+                            </td>
+                            <td>
+                              &#8377;&nbsp;{{ item.cart_item_total }}
+                            </td>
+                            <td>
+                              <a href="#" id="update-item{{ item.id }}" data-toggle="modal" data-target="#update-modal{{ item.id }}">
+                                <i class="fa fa-pencil" data-toggle="tooltip" data-placement="bottom" title="Modify {{ item.product }}"></i>
+                              </a>| 
+                              <a href="#" id="remove-item{{ item.id }}">
+                                <i class="fa fa-times" data-toggle="tooltip" data-placement="bottom" title="Remove {{ item.product }}"></i>
+                              </a>
+                            </td>
+                          </tr>
+                        {% endfor %}
+                      </tbody>
+                      <tfoot>
+                        <tr id="if_coupon_subtotal"  style="display: none">
+                          <td></td>
+                          <td></td>
+                          <td class="sub-total"><span id="coupon_name"></span></td>
+                          <td class="sub-total">-&nbsp;<span id="coupon_cost"></span></td>
+                          <td></td>
+                        </tr>
+                        <tr>
+                          <td></td>
+                          <td></td>
+                          <td class="grand-total"> Grand Total:</td>
+                          <td class="grand-total" id="cart_total">&#8377;&nbsp;{{ cart.total }}</td>
+                          <td></td>
+                        </tr>
+                      </tfoot>
+                    </table>
+                    
+                    <div class="row col-md-offset-6">
+                    <div id="coupon_success" style="display: none" class="success-note col-md-4">Coupon: <span id="updated_coupon"></span> successfully applied</div><br/>
+                    <div id="coupon_failed" style="display: none" class="danger-note col-md-4"><span id="no_coupon">Please Check the Coupon Code You entered</span></div><br/>
+                    <form id="coupon_form" class="col-md-12">{% csrf_token %}
+                        <div class="col-md-6">
+                          <input type="text" name="couponcode" class="form-control" id="couponcode" placeholder="Enter Coupon Code">    
+                        </div>
+                        <div class="col-md-6">
+                          <input type="submit" class="form-control btn btn-cakemporos-outline" value="Apply">   
+                        </div>
+                    </form>
+                    </div><br/>
+                    <button class="btn btn-froly btn-md pull-right" id="proceedBtn1" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">Proceed1</button>
+                </div>
+              </div>
+            </div><!-- /. panel1 -->
+            <div class="panel panel-cakemporos" id="panel2">
+              <div class="panel-heading" role="tab" id="headingTwo">
+                <h4 class="panel-title">
+                  <a role="button" id="deliveryDetailPanel" data-parent="#accordion" href="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+                    Delivery Details
+                  </a>
+                </h4>
+              </div><!-- /.Panel heading -->
+              <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+                <div class="panel-body">
+                  <div class="row col-md-offset-4">
+                    <div class="col-md-3">
+                      <div class="form-group">
+                        <label class="control-label">Enter Delivery Date</label>
+                        <input class="form-control" type="name" name="delivery_date" id="delivery-date" required>
+                      </div>
+                    </div>
+                    <div class="col-md-3" id="ifToday" style="display:none;">
+                      <div class="form-group">
+                        <label class="control-label">Enter Delivery Time</label>
+                        <input class="form-control" type="name" name="delivery_time" id="ifToday-delivery-time" required>
+                      </div>
+                    </div>
+                    <div class="col-md-3" id="elseToday" style="display:none;">
+                      <div class="form-group">
+                        <label class="control-label">Enter Delivery Time</label>
+                        <input class="form-control" type="name" name="delivery_time" id="elseToday-delivery-time" required>
+                      </div>
+                    </div>
+                  </div>
+                    <div id="prevAddr">  
+                    {% if addresses %}
+                      <div class="row">
+                        <div class="col-md-12 ">
+                           {% for item in addresses %}
+                            <div class="address_list text-center" id="address_list{{ item.id }}">
+                                <label class="radio-label">
+                                  <input type="radio" id="prev_address_radio{{ item.id }}" name="prev_shipping_address" value="{{ item.user_addresses }}" required/><p><span>{{ item.user.first_name }}</span>&nbsp;{{ item.user.last_name }}:&nbsp;&nbsp;</p>
+                                  {{ item }}</label>
+                            </div>
+                            {% endfor %}
+                            <div class="col-md-4">
+                              <a class="btn btn-warning btn-md pull-left" id="newAddressBtn">Enter New Address</a>
+                            </div>
+                            <div class="col-md-4"></div>
+                            <div class="col-md-4">
+                              <button class="btn btn-froly btn-md pull-right" id="proceedBtn2" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="true" aria-controls="collapseThree">Proceed1</button>
+                            </div>
+                        </div>
+                      </div>
+                      {% endif %}
+                    </div>
+                    <div id="newAddr" class="small-padding" style="display:none">
+                      <div class="row">
+                        <div class="col-md-6 col-md-offset-3">
+                          <div class="form-group" style="padding-left: 15px">
+                            <input class="form-control addrs" value="" id="flatno" placeholder="Flat No:">
+                          </div>
+                          <div class="form-group"style="padding-left: 15px">
+                            <input class="form-control addrs" value="" id="buildno" placeholder="Building Name">
+                          </div>
+                          <div class="form-group"style="padding-left: 15px">
+                            <input class="form-control addrs" value="" id="landmark" placeholder="Landmark">
+                          </div>
+                          <div class="form-group"style="padding-left: 15px">
+                            <select class="form-control" id="locality" name="locality">
+                              {% for item in locality %}
+                                <option selected="selected" disabled="disabled" value="{{ item }}">{{ item }}</option>
+                              {% endfor %}
+                            </select>
+                          </div>
+                          <div class="form-group"style="padding-left: 15px">
+                            <textarea class="form-control" id="new_ship_address" name="shipping"></textarea>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-md-4 col-md-offset-8">
+                           <button class="btn btn-froly btn-md pull-right" id="proceedBtn2" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="true" aria-controls="collapseThree">Proceeds2</button>
+                        </div>
+                      </div>
+                    </div>
+                </div><!-- /.panel body of panel2 -->
+              </div>
+            </div><!-- /.Panel 2 -->
+          </div><!-- /.Panel Group -->
+      {% endif %}
+      </div>
+    </div>
+  </div>
+</div>      
+<div id="update-modals">
+      {% for item in cart.cartitem_set.all %}
+        <div class="modal fade" id="update-modal{{ item.id }}" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title">Update {{ item.product }}</h4>
+              <h6 >By {{ item.product.baker }}</h6> 
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                  <div class="col-md-offset-2 col-md-8">
+                    <form id="quickupdate-form{{ item.id }}" class='form-horizontal' method='POST' action='{% url "update_cart" item.product.slug %}' enctype="multipart/form-data"> 
+                    {% csrf_token %}
+                        {% if item.product.category.title == "Cupcake" %}
+                          <div class="form-group">
+                              <select class='form-control' id="boxSelect{{ item.id }}" name="boxes" required>
+                                <option value="" disabled selected>Select No. of Box</option>
+                                {% for product_box_variants in item.product.boxvariations_set.all %}
+                                <option value="{{ product_box_variants }}">{{ product_box_variants }}</option>
+                                {% endfor %}
+                              </select>
+                            </div>
+                            {% endif %}
+                            {% if item.product.category.title == "Cake" %}
+                            <div class="form-group">
+                              <select class='form-control' name="weight" id="weightSelect{{ item.id }}" required>
+                                <option value="" disabled selected>Select Weight</option>
+                                {% for product_weight_variants in item.product.weightvariations_set.all %}
+                                    <option data-price="{{ product_weight_variants.price }}" data-product="{{ item.product }}" value="{{ product_weight_variants }}">{{ product_weight_variants }}</option>
+                                {% endfor %}
+                              </select>
+                            </div>
+                            {% endif %}
+                            <div class="form-group">
+                              <select class='form-control' id="eggSelect{{ item.id }}" name="egg_or_eggless" required>
+                                <option value="" disabled selected>Select Egg or Eggless</option>
+                                {% for product_egg_variants in item.product.eggvariations_set.all %}
+                                <option data-price="{{ product_egg_variants.extra_price }}" value="{{ product_egg_variants }}">{{ product_egg_variants }}</option>
+                                {% endfor %}
+                              </select>
+                            </div>
+                        {% if item.product.category.title == "Cake" %}
+                          <div class="form-group">
+                            <input  class="form-control"  name='msg_on_cake' type='text' placeholder = "Enter Message on Cake"/>
+                          </div>
+                        {% endif %}
+                          <div class="form-group">
+                            <div class="input-group">
+                                    <span class="input-group-btn">
+                                        <button type="button" class="btn btn-cakemporos btn-number" disabled="disabled" data-type="minus" data-field="qty">
+                                            <span class="fa fa-minus"></span>
+                                        </button>
+                                    </span>
+                                    <input type="text" name="qty" class="form-control input-number" value="1" min="1" max="10">
+                                    <span class="input-group-btn">
+                                        <button type="button" class="btn btn-cakemporos btn-number" data-type="plus" data-field="qty">
+                                            <span class="fa fa-plus"></span>
+                                        </button>
+                                    </span>
+                              </div>
+                          </div>
+                        {% if item.product.category.title == "Cake" %}
+                        <div class="form-group">
+                        <label class="label-control">
+                          <input type="checkbox" id="photoCakeCheck{{ item.id }}">&nbsp;Want to add photo to this cake?
+                        </label>
+                        </div>
+                        {% endif %}
+                        <div class="form-group" id="photoUploadField{{ item.id }}" style="display: none;">
+                        <p class="warning-note">P.S.: Cake's shape will either be sqaure or rectangle depending upon image and its orientation</p>
+                          <label>
+                            <input type="file" name="photo_cake_file" id="file-upload{{ item.id }}" class="photoCakeUpload photoCakeUpload-1" data-multiple-caption="{count} files selected accept='image/*'"/>
+                            <label for="file-upload{{ item.id }}"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="17" viewBox="0 0 20 17"><path d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"/></svg> <span>Upload Image.<!-- &hellip; --></span></label>
+                          </label>
+                        </div>
+                            <div class="form-group centralize">
+                              <input class="btn btn-cakemporos-outline pull-right" type="submit" value="Update" />
+                            </div>
+                          </form>
+                  </div>
+                </div>
+            </div>
+          </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+      </div><!-- /.modal -->
+    {% endfor %}
+      </div>
+{% endblock %}
+
+{% block extrajs %}
+
+<script type="text/javascript">
+
+  $(document).ready(function() {
+    removeItem();
+
+    function removeItem(){
+      $('a[id^=remove-item]').on("click", function(e) { // catch the form's submit event
+        e.preventDefault();
+        var aId = $(this).attr('id');
+        var itemID = aId.substring(11);
+        var message = "Removing Item";
+        console.log(message);
+        $(this).closest('tr').removeClass('new_item');
+        $(this).closest('tr').addClass('remove');
+        setTimeout(function() {
+                $('.remove').css('display', 'none')
+                }, 400);
+        $.ajax({
+          url:'/quick_cart/'+itemID+'/',
+          success: function(data) { // on success..
+              var quick_remove = jQuery.parseJSON(data);
+                console.log("SUCCESS");
+                console.log(data);
+                $('#total_cart_items_count').html(quick_remove.get_total_items_count);
+                $('#cart_total').html('&#8377;'+quick_remove.get_cart_total);
+                setTimeout(function() {
+                  if (quick_remove.get_total_items_count == 0) {
+                  $('#cart-table').remove();
+                  $('#count-zero-msg').show();
+                  $('#panel2').hide();
+                  $('#panel3').hide();
+                  $('#proceedBtn1').hide();
+                }
+                }, 400);
+            }
+        });
+    });
+    };
+     
+    $('#coupon_form').submit(function(e) { // catch the form's submit event
+        e.preventDefault();
+        $.ajax({ // create an AJAX call...
+            data: $(this).serialize(), // get the form data
+            type: 'POST', // GET or POST
+            url: '{% url "applycoupon" %}',
+            success: function(data) { // on success..
+              var updated_cart_data = jQuery.parseJSON(data);
+              if (updated_cart_data.failed == "False") {
+                $('#coupon_form').css('display', 'block');
+                $('#coupon_failed').css('display', 'block');
+                $('#coupon_success').css('display', 'none');
+                console.log("ERROR")
+              }
+              else {
+                $('#coupon_form').css('display', 'none');
+                $('#coupon_failed').css('display', 'none');
+                $('#coupon_success').css('display', 'block');
+                $('#if_coupon_subtotal').css('display', 'table-row');
+                $('#cart_total').html('&#8377;'+updated_cart_data.total);
+                $('#updated_coupon').html(updated_cart_data.coupon);
+                $('#coupon_name').html(updated_cart_data.coupon);
+                $('#coupon_cost').html('&#8377;'+updated_cart_data.coupon_cost);
+                console.log("SUCCESS")
+              }
+              console.log("success")
+            }
+        });
+        return false;
+    });
+    var d1 = new Date ();
+    var d2 = new Date ( d1 );
+    d2.setHours ( d1.getHours() + 6 );
+    var n = d1.getDate();
+    var m = d1.getMonth() + 1;
+    var y = d1.getFullYear();
+    var d3 = '0'+m+'/'+n+'/'+y
+    var h1 = d1.getHours();
+    $('#delivery-date').datepicker({
+      startDate:d2,
+    });
+    $('#delivery-date').on('change',function(){
+      var getDate = $(this).val();
+      if (getDate == d3) {
+        $('#ifToday').show();
+        $('#elseToday').hide();
+          $('#ifToday-delivery-time').timepicker({
+          'minTime': d2,
+          'maxTime': '8:00pm'
+        });
+      } else {
+        $('#elseToday').show();
+        $('#ifToday').hide();
+        $('#elseToday-delivery-time').timepicker({
+          'minTime': '11:00am',
+          'maxTime': '8:00pm'
+        });
+          }
+    });
+    $('#ifToday-delivery-time').timepicker({
+          'minTime': d2,
+          'maxTime': '8:00pm'
+        });
+    /**/
+    $(".radio-label").click(function(){
+      $("label").removeClass('radio-label-selected');
+      $(this).addClass('radio-label-selected');
+       $('#proceedBtn2').prop('disabled', false);
+    });
+    $("#updateCart").click(function(){
+      $('#prev_addresses').attr('data-toggle','')
+    });
+    $("#prev_addresses").click(function(){
+      $(this).attr('data-toggle', 'collapse')
+      $("#flatno").prop('required', false);
+      $("#buildno").prop('required', false);
+      $("#landmark").prop('required', false);
+      $("#new_ship_address").prop('required', false);
+      $("input[id^=prev_address_radio]").prop('required', true);
+      $('#paymentMethod').attr('data-toggle', '');
+   });
+    $(".addrs").change(function(){
+        $("#new_ship_address").val($("#flatno").val() + "," + $("#buildno").val() + "," + $("#landmark").val());
+        $('#newAddrProceedBtn2').prop('disabled', false);
+    });
+    $('#newAddressBtn').on('click', function(){
+        $('#newAddr').delay(300).show();
+        $('#prevAddr').delay(100).hide();
+    });
+    $('#showPrevAddr').on('click', function(){
+        $('#newAddr').delay(100).hide();
+        $('#prevAddr').delay(300).show();
+    });
+    // SO TEXAREA WOULD NOT COPY ANY EMPTY LINES??
+    $('#proceedBtn1').on('click', function(){
+      $('#proceedBtn2').prop('disabled', true);
+      $('#deliveryDetailPanel').attr('data-toggle', 'collapse');
+    });
+    $("#proceedBtn2").on('click', function(){
+      $('#paymentMethodPanel').attr('data-toggle', 'collapse');
+    });
+    $("#proceedBtn3").on('click', function(){
+      $('#paymentMethod').attr('data-toggle', 'collapse');
+    });
+    $('#updateCartPanel').on('click', function(){
+      $('#deliveryDetailPanel').attr('data-toggle','');
+      $('#paymentMethodPanel').attr('data-toggle','');
+    });
+    $('#deliveryDetailPanel').on('click', function(){
+      $('#updateCartPanel').attr('data-toggle','collapse');
+      $('#paymentMethodPanel').attr('data-toggle','');
+    });
+    $('#paymentMethodPanel').on('click', function(){
+      $('#updateCartPanel').attr('data-toggle','collapse');
+      $('#deliveryDetailPanel').attr('data-toggle','collapse');
+    });
+    $('.btn-number').click(function(e){
+    e.preventDefault();
+    
+    fieldName = $(this).attr('data-field');
+    type      = $(this).attr('data-type');
+    var input = $("input[name='"+fieldName+"']");
+    var currentVal = parseInt(input.val());
+    if (!isNaN(currentVal)) {
+        if(type == 'minus') {
+            
+            if(currentVal > input.attr('min')) {
+                input.val(currentVal - 1).change();
+            } 
+            if(parseInt(input.val()) == input.attr('min')) {
+                $(this).attr('disabled', true);
+            }
+
+        } else if(type == 'plus') {
+
+            if(currentVal < input.attr('max')) {
+                input.val(currentVal + 1).change();
+            }
+            if(parseInt(input.val()) == input.attr('max')) {
+                $(this).attr('disabled', true);
+            }
+
+        }
+    } else {
+        input.val(0);
+    }
+  });
+    $('.input-number').focusin(function(){
+       $(this).data('oldValue', $(this).val());
+    });
+    $('.input-number').change(function() {
+        
+        minValue =  parseInt($(this).attr('min'));
+        maxValue =  parseInt($(this).attr('max'));
+        valueCurrent = parseInt($(this).val());
+        
+        name = $(this).attr('name');
+        if(valueCurrent >= minValue) {
+            $(".btn-number[data-type='minus'][data-field='"+name+"']").removeAttr('disabled')
+        } else {
+            alert('Sorry, the minimum value was reached');
+            $(this).val($(this).data('oldValue'));
+        }
+        if(valueCurrent <= maxValue) {
+            $(".btn-number[data-type='plus'][data-field='"+name+"']").removeAttr('disabled')
+        } else {
+            alert('Sorry, the maximum value was reached');
+            $(this).val($(this).data('oldValue'));
+        }
+        
+        
+    });
+    $(".input-number").keydown(function (e) {
+        // Allow: backspace, delete, tab, escape, enter and .
+        if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 190]) !== -1 ||
+             // Allow: Ctrl+A
+            (e.keyCode == 65 && e.ctrlKey === true) || 
+             // Allow: home, end, left, right
+            (e.keyCode >= 35 && e.keyCode <= 39)) {
+                 // let it happen, don't do anything
+                 return;
+        }
+        // Ensure that it is a number and stop the keypress
+        if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+            e.preventDefault();
+        }
+    });
+    $('input[id^="photoCakeCheck"').iCheck({
+      checkboxClass: 'icheckbox_square-yellow',
+      radioClass: 'iradio_square-yellow',
+      increaseArea: '20%' // optional
+    });
+    $('input[id^="photoCakeCheck"').on('ifChecked', function () { 
+      $('div[id^="photoUploadField"').css('display','block');
+     });
+    $('input[id^="photoCakeCheck"').on('ifUnchecked', function () { 
+      $('div[id^="photoUploadField"').css('display','none');
+     });
+    
+;
+
+( function ( document, window, index )
+{
+  var inputs = document.querySelectorAll( '.photoCakeUpload' );
+  Array.prototype.forEach.call( inputs, function( input )
+  {
+    var label  = input.nextElementSibling,
+      labelVal = label.innerHTML;
+
+    input.addEventListener( 'change', function( e )
+    {
+      var fileName = '';
+      if( this.files && this.files.length > 1 )
+        fileName = ( this.getAttribute( 'data-multiple-caption' ) || '' ).replace( '{count}', this.files.length );
+      else
+        fileName = e.target.value.split( '\\' ).pop();
+
+      if( fileName )
+        label.querySelector( 'span' ).innerHTML = fileName;
+      else
+        label.innerHTML = labelVal;
+    });
+
+    // Firefox bug fix
+    input.addEventListener( 'focus', function(){ input.classList.add( 'has-focus' ); });
+    input.addEventListener( 'blur', function(){ input.classList.remove( 'has-focus' ); });
+  });
+}( document, window, 0 ));
+  });/* end of document.ready*/
+</script>
+<script type="text/javascript">
+  
+</script>
+{% endblock %}
+
+

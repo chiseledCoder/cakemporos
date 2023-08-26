@@ -1,0 +1,43 @@
+{% extends "account/base.html" %}
+
+{% load i18n %}
+{% load account socialaccount %}
+
+{% block head_title %}{% trans "Sign In" %}{% endblock %}
+
+{% block content %}
+<div class="container">
+<div class="row centralize">
+  <div class="col-md-4 col-sm-6 col-xs-12 col-md-offset-4 col-sm-offset-3">
+    <h1>{% trans "Sign In" %}</h1>
+<a href="/accounts/facebook/login/"><div class="fb-login-button" data-max-rows="1" data-size="large" data-show-faces="false" data-auto-logout-link="false"></div></a>
+    {% include "socialaccount/snippets/login_extra.html" %}
+    <div class="inset">
+        <div class="header">Or sign in directly</div>
+        <form class="login" method="POST" action="{% url 'account_login' %}">
+          {% csrf_token %}
+            {{ form.non_field_errors }}
+            <input id="id_login" class="login-input form-control" maxlength="30" name="login" placeholder="Username" type="text" />{{ form.login.errors }}<br>
+            <input id="id_password"  class="login-input form-control" name="password" placeholder="Password" type="password" />{{ form.password.errors }}<br>
+            <div class="remember-forgot-section">
+                <input id="id_remember" name="remember" type="checkbox" />
+                <label for="id_remember">Remember Me</label><br/>
+                <a class="forgot" href="{% url 'account_reset_password' %}">{% trans "Forgot Password?" %}</a>
+            </div>
+          {% if redirect_field_value %}
+          <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+          {% endif %}
+
+          <button class="btn btn-purple" type="submit">{% trans "Sign In" %}</button>
+        </form>
+
+        <div class="footnote">
+            Don't have an account? Login with Facebook above or <a href="{% url 'account_signup' %}">Sign Up</a>
+        </div>
+    </div>
+  </div><!-- ./col -->
+</div><!-- ./row -->
+</div><!-- ./container -->
+
+{% endblock %}
+

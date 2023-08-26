@@ -1,0 +1,31 @@
+{% extends 'mydashboard/base.html' %}
+{% load staticfiles %}
+{% block content %}
+	<section class="content-header">
+          <h1>
+            Bakers
+          </h1>
+          <ol class="breadcrumb">
+            <li><a href="../"><i class="fa fa-tachometer"></i> Dashboard</a></li>
+            <li><a href="#"><i class="fa fa-birthday-cake"></i>Baker</a></li>
+          </ol>
+</section>
+<section class="content">
+	<div class="row">
+		<div class="col-md-12">
+			<div class="box box-danger box-solid">
+				<div class="box-header with-border">
+					<h1><i class="fa fa-ban"></i> Are you sure you want to delete the product <b>{{ object }}</b></h1>
+				</div>
+				<div class="box-body">
+					<form action="" method="post">{% csrf_token %}
+					    <input type="submit" class="btn btn-danger" value="Confirm" />
+					    <a href="{% url 'myadmin_baker_list' %}" class="btn btn-info">Cancel</a>
+					</form>
+
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+{% endblock %}

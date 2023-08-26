@@ -1,0 +1,410 @@
+{% load staticfiles %}
+<!-- login modal -->
+<div class="modal fade" id="login-modal" tabindex="-1" role="dialog">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">Close</span></button>
+				<h4 class="modal-title text-center" id="loginModelLabel">Login</h4>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-md-8 col-md-offset-2">
+					<p id="loginerror"></p>
+						<form class="login-form" id="loginform">{% csrf_token %}
+							<div class="form-group">
+								<input type="name" name="phone" id="login-username" class="form-control" placeholder="Phone Number" required="required" maxlength="10" size="10"/>
+								<label id="no-pno-label" class="control-label" for="login-username" style="display:none;">Please enter Phone Number.</label>
+							</div>
+							<p class="text-danger text-center" id="no-user-error" style="display:none;">We didn't find you! Please Register</p>
+							<div class="form-group">
+								<input type="password" name="password" id="login-password" class="form-control" placeholder="Password" required="required" />
+							</div>
+							<p class="text-danger text-center" id="password-error" style="display:none;">Wrong Password!</p>
+							<div class="form-group text-center"> 
+								<input type="submit" value="Login" class="btn  btn-lg btn-block btn-cakemporos" id="signUp-Submit">
+							</div>
+						</form>
+					</div>
+				</div>
+				<hr/>
+				<div class="row">
+					<div class="col-md-8 col-md-offset-2 text-center">
+						<a href="#" onclick="openForgotPassword()"><b>Forgot Password</b></a>&nbsp;<a href="#">or</a>&nbsp;<a href="#" onclick="openRegister()"><b>Register</b></a>
+					</div>
+				</div>
+			</div>
+			
+		</div>
+	</div>
+</div>
+
+
+<!-- REGISTRATION MODAL -->
+<div class="modal fade" id="register-modal" tabindex="-1" role="dialog">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">Close</span></button>
+				<h4 class="modal-title text-center" id="registerModelLabel">Register</h4>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-md-6 col-md-offset-3">
+					<p id="loginerror"></p>
+						<form id="signupForm">{% csrf_token %}
+							<div class="form-group">
+								<input type="text" class="form-control" id="username" name="name" placeholder="Full Name" required="required" />
+							</div>
+							<div class="form-group">
+								<input type="text" class="form-control" id="phone" name="phone" placeholder="Mobile Number" maxlength="10" size="10" required="required" />
+								<p class="text-danger text-center" id="user-phone-exists-error" style="display:none;">Phone already registered.</p>
+
+							</div>
+							<div class="form-group">
+								<input type="text" class="form-control" id="email" name="email" placeholder="Email" required="required" />
+								<p class="text-danger text-center" id="user-email-exists-error" style="display:none;">Email already registered.</p>
+							</div>
+							<div class="form-group">
+								<input type="password" class="form-control" id="password" name="password" placeholder="Password" required="required" />
+							</div>
+							<div class="form-group">
+								<input type="password" class="form-control" id="confirm_password" name="confirm_password" placeholder="Confirm Password" required="required" />
+							</div>
+							<div class="form-group text-center">
+								<input type="submit" value="Sign Up" class="btn  btn-lg btn-block btn-cakemporos" id="signUp-submit">
+							</div>
+						</form>
+					</div>
+				</div>
+				<hr/>
+				<div class="row">
+					<div class="col-md-8 col-md-offset-2 text-center">
+						<a href="#" onclick="openLogin()"><b>Login</b></a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- END OF REGISTRATION MODAL -->
+<!-- OTP VERFICATION modal -->
+<div class="modal fade" id="OTP-modal" tabindex="-1" role="dialog">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">Close</span></button>
+				<h4 class="modal-title text-center" id="verifyModelLabel">OTP Verification</h4>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-md-8 col-md-offset-2">
+					<p id="loginerror"></p>
+						<form id="otpVerification">{% csrf_token %}
+							<div class="form-group">
+								<input type="hidden" class="form-control" id="otp_username" name="username" />
+							</div>
+							<div class="form-group">
+								<input type="name" class="form-control" id="otp" name="otp" placeholder="Enter OTP" required="required" />
+							</div>
+							 <div class="form-group text-center">
+									<input type="submit" value="Verify" class="btn  btn-lg btn-block btn-cakemporos" >
+								</div>
+						</form>
+					</div>
+				</div>
+				<hr/>
+			</div>
+			
+		</div>
+	</div>
+</div>
+<!-- Forgot password -->
+<div class="modal fade" id="reset-password-modal" tabindex="-1" role="dialog">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">Close</span></button>
+				<h4 class="modal-title text-center" id="registerModelLabel">Reset Password</h4>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-md-6 col-md-offset-3">
+					<p id="loginerror"></p>
+					<form id="resetPassword" class="form-horizontal">{% csrf_token %}
+					<div class="form-group">
+								<input type="hidden" class="form-control" id="reset_username" name="username" value="nikhilshirsath" />
+							</div>
+					<div class="form-group has-feedback">
+						<input type="password" class="form-control" id="reset_password" name="password" placeholder="Password" required="required" />
+						<span class="fa fa-check form-control-feedback" id="successFeedback1" style="display:none" aria-hidden="true"></span>
+						<span class="fa fa-times form-control-feedback" id="errorFeedback1" style="display:none" aria-hidden="true"></span>
+					</div>
+					<div class="form-group has-feedback">
+						<input type="password" class="form-control" id="reset_confirm_password" name="confirm_password" placeholder="Confirm Password" required="required" />
+						<span class="fa fa-check form-control-feedback" id="successFeedback2" style="display:none" aria-hidden="true"></span>
+						<span class="fa fa-times form-control-feedback" id="errorFeedback2" style="display:none" aria-hidden="true"></span>
+					</div>
+					<div class="text-center" id="errorMessage" style="display:none">
+						<p class="text-froly">Passwords don't match!</p>
+					</div>
+					<div class="text-center" id="successMessage" style="display:none">
+						<p class="text-success">Passwords match!</p>
+					</div>
+					<div class="form-group text-center">
+						<input type="submit" value="Reset Password" class="btn  btn-lg btn-block btn-cakemporos" id="signUp-submit">
+					</div>
+				</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- FOrgot password OTP VERIFICATION MODAL -->
+<div class="modal fade" id="OTP-forgotpass-modal" tabindex="-1" role="dialog">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">Close</span></button>
+				<h4 class="modal-title text-center" id="verifyModelLabel">Verify</h4>
+				<h6 class="text-center">OTP sent to <span id="verify-user-phone-forgotpass"></span></h6>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-md-8 col-md-offset-2">
+					<p id="loginerror"></p>
+						<form id="forgotpassOtpVerification">{% csrf_token %}
+							<div class="form-group">
+								<input type="hidden" class="form-control" id="forgotpass_otp_phone" name="forgotpass_phone" maxlength="10" size="10"/>
+							</div>
+							<div class="form-group">
+								<input class="form-control" id="forgotpass_otp" name="forgotpass_otp" maxlength="10" size="10"/>
+							</div>
+							<p class="text-froly" style="display:none;" id="correctOTP">Please correct OTP entered</p>
+							 <div class="form-group text-center">
+									<input type="submit" value="Verify" class="btn  btn-lg btn-block btn-cakemporos" >
+								</div>
+						</form>
+					</div>
+				</div>
+				<hr/>
+			</div>
+			
+		</div>
+	</div>
+</div>
+
+<!-- New Adddress MOdal -->
+<div class="modal fade" id="newAddrModal" tabindex="-1" role="dialog">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">Close</span></button>
+				<h4 class="modal-title text-center" id="addressModalLabel">Add New Address</h4>
+			</div>
+			<div class="modal-body">
+			 <div class="row">
+				<div class="col-md-6 col-md-offset-3">
+					 <form id="newAddrForm">{% csrf_token %}
+											<div class="form-group">
+												<input class="form-control addrs" value="" id="full_name" placeholder="Full Name">
+											</div>
+											<div class="form-group">
+												<input class="form-control addrs" value="{{ useraccount.phone }}" id="phone_no" placeholder="Phone Number">
+											</div>
+											<div class="form-group">
+												<input type="text" id="locality" name="locality" class="form-control" placeholder="Select Locality">
+											</div>
+											<div class="form-group">
+												<input class="form-control addrs" value="" id="flatno" placeholder="Flat No:">
+											</div>
+											<div class="form-group">
+												<input class="form-control addrs" value="" id="buildno" placeholder="Building Name">
+											</div>
+											<div class="form-group">
+												<input class="form-control addrs" value="" id="landmark" placeholder="Landmark">
+											</div>
+											
+											<div class="form-group">
+												<textarea class="form-control" id="new_ship_address" name="shipping"></textarea>
+											</div>
+											<div class="form-group text-center">
+												<input type="submit" name="submit" value="Add" class="btn btn-block btn-lg btn-cakemporos">
+											</div>
+									</form>
+				</div>
+			 </div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<!-- Error modal -->
+<div class="modal fade" id="errorModal" tabindex="-1" role="dialog">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">Close</span></button>
+				<h4 class="modal-title text-center" id="errorModalLabel">Got Sour Milk!</h4>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- No delivery error modal -->
+<div class="modal fade" id="noDeliveryModal" tabindex="-1" role="dialog">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">Close</span></button>
+				<h4 class="modal-title text-center" id="noDeliveryModalLabel">Oops! Delivery distance is too far for this cake.</h4>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Update Modal -->
+<div id="update-modals">
+			{% for item in cart.cartitem_set.all %}
+				<div class="modal fade" id="update-modal{{ item.id }}" tabindex="-1" role="dialog">
+				<div class="modal-dialog" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">Close</span></button>
+							<h4 class="modal-title text-center">Modify {{ item.product }} </h4>
+						</div>
+						<div class="modal-body">
+								<div class="row">
+									<div class="col-md-offset-2 col-md-8">
+										<form id="quickupdate-form{{ item.id }}" class='form-horizontal' method='POST' action='{% url "update_cart" item.id %}' enctype="multipart/form-data"> 
+										{% csrf_token %}
+												{% if item.product.product_type.title == "Cupcake" %}
+													<div class="form-group">
+															<select class='form-control' id="boxSelect{{ item.id }}" name="boxes" required>
+																{% for product_box_variants in item.product.boxvariations_set.all %}
+																	{% if item.cupcake_qty.box_variation_type == product_box_variants.box_variation_type %}
+																	<option data-price="{{ item.cupcake_qty_price }}" data-product="{{ item.product }}" value="{{ item.cupcake_qty }}" selected="selected">{{ item.cupcake_qty }}</option>
+																	{% else %}
+																	<option data-price="{{ product_weight_variants.price }}" data-product="{{ item.product }}" value="{{ product_box_variants }}">{{ product_box_variants }}</option>
+																	{% endif %}
+																{% endfor %}
+															</select>
+														</div>
+												{% endif %}
+														{% if item.product.product_type.title == "Cake" %}
+														<div class="form-group">
+															<select class='form-control' name="weight" id="weightSelect{{ item.id }}" required>
+																{% for product_weight_variants in item.product.weightvariations_set.all %}
+																	{% if item.weight.weight_variation_type == product_weight_variants.weight_variation_type %}
+																		<option data-price="{{ item.weight_price }}" data-product="{{ item.product }}" value="{{ item.weight }}" selected="selected">{{ item.weight }}</option>
+																	{% else %}
+																	<option data-price="{{ product_weight_variants.price }}" data-product="{{ item.product }}" value="{{ product_weight_variants }}">{{ product_weight_variants }}</option>
+																	{% endif %}
+																{% endfor %}
+															</select>
+														</div>
+												{% endif %}
+														<div class="form-group">
+															<select class='form-control' id="eggSelect{{ item.id }}" name="egg_or_eggless" required>
+																{% for product_egg_variants in item.product.eggvariations_set.all %}
+																	
+																	{% if item.egg_or_eggless.egg_variation_type == product_egg_variants.egg_variation_type %}
+																	<option data-price="{{ item.egg_or_eggless_price }}" value="{{ item.egg_or_eggless }}" selected="selected">{{ item.egg_or_eggless }}</option>
+																	{% else %}
+																		<option data-price="{{ product_egg_variants.extra_price }}" value="{{ product_egg_variants }}">{{ product_egg_variants }}</option>
+																	{% endif %}
+																{% endfor %}
+															</select>
+														</div>
+												{% if item.product.product_type.title == "Cake" %}
+													<div class="form-group">
+														<input  class="form-control"  name='msg_on_cake' type='text' placeholder = "Enter Message on Cake"/>
+													</div>
+												{% endif %}
+												{% if item.product.product_type.title == "Cake" %}
+													<div class="form-group">
+														<div class="input-group">
+																		<span class="input-group-btn">
+																				<button type="button" class="btn btn-cakemporos btn-number" disabled="disabled" data-type="minus" data-field="qty">
+																						<span class="fa fa-minus"></span>
+																				</button>
+																		</span>
+																		<input type="text" name="qty" class="form-control input-number" value="1" min="1" max="10">
+																		<span class="input-group-btn">
+																				<button type="button" class="btn btn-cakemporos btn-number" data-type="plus" data-field="qty">
+																						<span class="fa fa-plus"></span>
+																				</button>
+																		</span>
+															</div>
+													</div>
+												{% endif %}
+												{% if item.product.product_type.title == "Cake" %}
+												<div class="form-group">
+													<label class="label-control">
+														<input type="checkbox" id="photoCakeCheck{{ item.id }}">&nbsp;Want to add photo to this cake?
+													</label>
+												</div>
+												{% endif %}
+												<div class="form-group" id="photoUploadField{{ item.id }}" style="display: none;">
+												<p class="warning-note">P.S.: Cake's shape will either be sqaure or rectangle depending upon image and its orientation</p>
+													<label>
+														<input type="file" name="photo_cake_file" id="file-upload{{ item.id }}" class="photoCakeUpload photoCakeUpload-1" data-multiple-caption="{count} files selected accept='image/*'"/>
+														<label for="file-upload{{ item.id }}"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="17" viewBox="0 0 20 17"><path d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"/></svg>
+														 <span>Upload Image.<!-- &hellip; --></span></label>
+													</label>
+												</div>
+														<div class="form-group">
+															<input class="btn btn-cakemporos-outline pull-right btn-block btn-lg" type="submit" value="Update" />
+														</div>
+													</form>
+									</div>
+								</div><!-- ./row -->
+						</div><!-- ./modal-body -->
+					</div><!-- /.modal-content -->
+				</div><!-- /.modal-dialog -->
+			</div><!-- /.modal -->
+		{% endfor %}
+			</div>
+			</div>
+</div>
+
+<!-- ./ -->
+ <div class="modal fade" id="addon-modal" tabindex="-1" role="dialog">
+				<div class="modal-dialog modal-lg" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">Close</span></button>
+							<h4 class="modal-title text-center">Buy Addons </h4>
+						</div>
+						 <form method="POST" action="{% url 'quick_addon' %}">{% csrf_token %}
+						<div class="modal-body">
+							<div class="row">
+							{% for item in addons %} 
+									<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+										<div class="box-bordered text-center addon-box">
+											<div class="box-body">
+												<div class="addon-image">
+													<img src="{{ item.image.url }}">
+												</div>
+												<br/>
+												<label>
+												<input type="checkbox" name="addons" id="addon{{ item.slug }}" value="{{ item.slug }}">
+												&nbsp;{{ item }} - &#8377;{{ item.price }}
+												</label>
+											</div>
+										</div>
+								</div>
+								{% endfor %}
+								
+							</div>
+						</div><!-- /modal-body -->
+						<div class="modal-footer">
+							<div class="text-center">
+								<input type="submit" name="submit" value="Add to Cart" class="btn btn-cakemporos-outline">
+							</div>
+						</div>
+				</form>
+					</div><!-- ./mdoal-content -->
+				</div><!-- .modal-dialog -->
+</div><!-- ./modal -->

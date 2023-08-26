@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="wrapper">
+    	<div id="main-content">
+    		<div class="container">
+    			<section>
+	    			<div class="page-title text-center">
+	    				<h3 class="text-cakemporos"><span>R</span>ecipe <span>G</span>ot <span>S</span>poiled</h3>	
+
+	    			</div>
+	    		</section>
+	    		<section class="text-center">
+	    			<h2>404 Error</h2>
+	    				<a href="{% url 'userindex' %}" class="btn btn-cakemporos">Continue Shopping</a>
+	    		</section>
+	    		
+    		</div>
+    	</div>
+    </div>
+{% endblock %}

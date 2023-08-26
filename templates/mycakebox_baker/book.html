@@ -1,0 +1,107 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+<h3>MYCAKEBOX BOOKING</h3>
+<form id="get_locality_form" action="{% url 'get_distance' %}" method="POST" >{% csrf_token %}
+	<input id="autocomplete" placeholder="Enter your address" name="autocomplete" type="text">
+	<input type="submit" value="submit"></input>
+</form>
+<b>Origin: </b><span id="origin"></span><br/>
+<b>Destination: </b><span id="destination"></span><br/>
+<b>Distance: </b><span id="distance"></span><br/>
+<b>Duration: </b><span id="duration"></span>
+
+	
+			<script type="text/javascript" src="{% static 'jquery/jquery.min.js' %}"></script>
+             <script>
+      // This example displays an address form, using the autocomplete feature
+      // of the Google Places API to help users fill in the information.
+
+      // This example requires the Places library. Include the libraries=places
+      // parameter when you first load the API. For example:
+      // <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places">
+
+
+
+      var placeSearch, autocomplete;
+      var componentForm = {
+		  street_number: 'short_name',
+		  route: 'long_name',
+		  locality: 'long_name',
+		  administrative_area_level_1: 'short_name',
+		  country: 'long_name',
+		  postal_code: 'short_name'
+		};
+	    function initAutocomplete() {
+	      	var defaultBounds = new google.maps.LatLngBounds(
+	  		new google.maps.LatLng(18.897727, 72.810469),
+	  		new google.maps.LatLng(19.278625, 72.980071));
+	      	var options = {
+			  types: ['geocode'],
+			  componentRestrictions: {country: 'in'},
+			  strictBounds: true,
+			};
+	        // Create the autocomplete object, restricting the search to geographical
+	        // location types.
+	        autocomplete = new google.maps.places.Autocomplete((document.getElementById('autocomplete')), options);
+	        // When the user selects an address from the dropdown, populate the address
+	        // fields in the form.
+	       autocomplete.addListener('place_changed', onChangeTest);
+	    }
+	    function onChangeTest(textbox){
+	      	var place = autocomplete.getPlace();
+	      	for (var i = 0; i < place.address_components.length; i++) {
+		    	var addressType = place.address_components[i].types[0];
+		    	if (componentForm[addressType]) {
+		      		var val = place.address_components[i][componentForm[addressType]];
+		      	}
+		    }
+	  	}
+	      // Bias the autocomplete object to the user's geographical location,
+	      // as supplied by the browser's 'navigator.geolocation' object.
+	      function geolocate() {
+	        if (navigator.geolocation) {
+	          navigator.geolocation.getCurrentPosition(function(position) {
+	            var geolocation = {
+	              lat: position.coords.latitude,
+	              lng: position.coords.longitude
+	            };
+	            var circle = new google.maps.Circle({
+	              center: geolocation,
+	              radius: position.coords.accuracy
+	            });
+	            autocomplete.setBounds(circle.getBounds());
+	          });
+	        }
+	      }
+
+
+
+	$('#get_locality_form').submit(function(e) { // catch the form's submit event
+        e.preventDefault();
+        $.ajax({ // create an AJAX call...
+            data: $(this).serialize(), // get the form data
+            type: $(this).attr('method'), // GET or POST
+            url: $(this).attr('action'), // the file to call
+            success: function(data) { // on success..
+              var distance_data = jQuery.parseJSON(data);
+              console.log(distance_data);
+              $('#origin').html(distance_data['origin']);
+              $('#destination').html(distance_data['destination']);
+              $('#distance').html(distance_data['distance']);
+              $('#duration').html(distance_data['duration']);
+            },
+            error: function(data) {
+                
+            }/*  end of error */
+        });
+        return false;
+    });
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCRcKLBQYizfeHi8fc1GzihE5TK4KTOYEY&libraries=places&region=in&callback=initAutocomplete" async defer></script>
+</body>
+</html>

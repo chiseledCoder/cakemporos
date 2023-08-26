@@ -1,0 +1,166 @@
+{% extends 'mybaker/base.html' %}
+{% load staticfiles %}
+{% block extracss %}
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.12/css/dataTables.bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.2.2/css/buttons.bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.2.2/css/buttons.dataTables.min.css">
+{% endblock %}
+
+{% block content %}
+<section class="content-header">
+      <h1>
+        Products
+        
+        
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="{% url 'mybaker_dashboard' %}"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="#">Catalog</a></li>
+        <li class="active">Product List</li>
+      </ol>
+    </section>
+<div class="content">
+	<div class="box box-default">
+		<div class="box-header">
+			<h3 class="box-title">Manage Products</h3>
+			<div class="pull-right box-tools">
+				<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-exapnd="false">Action
+				<i class="fa fa-caret-down"></i>
+				</button>
+				<ul class="dropdown-menu" id="datatable_tools">
+                 <li>
+                     <a href="javascript:;" data-action="0" class="tool-action">
+                         <i class="fa fa-print"></i> Print</a>
+                 </li>
+                 <li>
+                     <a href="javascript:;" data-action="2" class="tool-action">
+                        <i class="fa fa-file-pdf-o"></i> PDF</a>
+                 </li>
+                 <li>
+                     <a href="javascript:;" data-action="3" class="tool-action">
+                         <i class="fa fa-file-excel-o"></i> Excel</a>
+                 </li>
+             </ul>
+			</div>
+		</div>
+		<div class="box-body table-responsive ">
+			<table class="table table-hover tabel-bordered" id="product_list_table">
+				<thead>
+					<tr>
+						<th>Product Name</th>
+						<th>Product Type</th>
+						<th>Product Category</th>
+						<th>Product Details</th>
+						<th>Product Status</th>
+						<th>Action</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for item in products %}
+					<tr>
+						<td>
+							{{ item }}
+						</td>
+						<td>
+							{{ item.product_type }}
+						</td>
+						<td>
+							{{ item.category }}
+						</td>
+						<td>
+						<ul class="list-unstyled">
+							{% if item.product_type|lower|slugify == "cake" %}
+	                         	{% for weight_group in item.weightvariations_set.all %}
+	                            	{% if weight_group.weight_variation_type == "0.5 Kg" %}
+	                             		<li><b>{{ weight_group }} Cost:</b> {{ weight_group.price }}</li>
+	                            	{% endif %}
+	                         	{% endfor %}
+	                      	{% elif item.product_type|lower|slugify == "cupcake" %}
+	                        	{% for weight_group in item.boxvariations_set.all %}
+	                         	   {% if weight_group.box_variation_type == "1 Box" %}
+	                                	<li><b>{{ weight_group }} Cost:</b>    {{ weight_group.price }}</li>
+	                            	{% endif %}
+	                         	{% endfor %}
+	                      	{% endif %}
+	                      	{% for egg_or_eggless in item.eggvariations_set.all %}
+	                      		<li><b>{{ egg_or_eggless }}: </b> {{ egg_or_eggless.extra_price }}</li>
+	                      	{% endfor %}
+						</ul>
+							
+
+						</td>
+						<td>
+							{% if item.status == "Enabled" %}
+								<span class="label label-success">{{ item.status }}</span>
+							{% else %}
+								<span class="label label-danger">{{ item.status }}</span>
+							{% endif %}
+						</td>
+						<td>
+							<a href="{% url 'mybaker_update_product' item.slug %}">Update</a>
+						</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div><!-- /.box-body -->
+	</div><!-- /.box -->
+</div><!-- end of content	 -->
+{% endblock %}
+{% block extrajs %}
+
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.2.2/js/dataTables.buttons.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.2.2/js/buttons.bootstrap.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/2.5.0/jszip.min.js"></script>
+<script type="text/javascript" src="https://cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/pdfmake.min.js"></script>
+<script type="text/javascript" src="https://cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/vfs_fonts.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.2.2/js/buttons.html5.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.2.2/js/buttons.print.min.js"></script>
+<script type="text/javascript">
+	$(document).ready(function(){
+		var product_table = $('#product_list_table');
+
+        var oTable = product_table.dataTable({
+        	"language": {
+                "aria": {
+                    "sortAscending": ": activate to sort column ascending",
+                    "sortDescending": ": activate to sort column descending"
+                },
+                "emptyTable": "No data available in table",
+                "info": "Showing _START_ to _END_ of _TOTAL_ entries",
+                "infoEmpty": "No entries found",
+                "infoFiltered": "(filtered1 from _MAX_ total entries)",
+                "lengthMenu": "_MENU_ entries",
+                "search": "Search:",
+                "zeroRecords": "No matching records found"
+            },
+             buttons: [
+                { extend: 'print', className: 'btn dark btn-outline',exportOptions: {columns: [0,1,2,3,4]}},
+                { extend: 'pdf', className: 'btn green btn-outline', exportOptions: {columns: [0,1,2,3,4]}  },
+                { extend: 'excel', className: 'btn yellow btn-outline ', exportOptions: {columns: [0,1,2,3,4]}  },
+            ],
+
+            // setup responsive extension: http://datatables.net/extensions/responsive/
+            responsive: true,
+
+            //"ordering": false, disable column ordering 
+            //"paging": false, disable pagination
+
+            "order": [
+                [0, 'asc']
+            ],
+            
+            "lengthMenu": [
+                [5, 10, 15, 20, -1],
+                [5, 10, 15, 20, "All"] // change per page values here
+            ],
+            // set the initial value
+            "pageLength": 10,
+        });
+        $('#datatable_tools > li > a.tool-action').on('click', function() {
+            var action = $(this).attr('data-action');
+            oTable.DataTable().button(action).trigger();
+        });
+ });/*end of document.ready */
+</script>
+{% endblock %}

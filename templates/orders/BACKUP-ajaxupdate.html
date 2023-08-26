@@ -1,0 +1,24 @@
+/*$('form[id^=quickupdate-form]').submit(function(e) { // catch the form's submit event
+        var formId = $(this).attr('id');
+        var itemID = formId.substring(11);
+        e.preventDefault();
+        $.ajax({ // create an AJAX call...
+            data: $(this).serialize(), // get the form data
+            type: $(this).attr('method'), // GET or POST
+            url: $(this).attr('action'), // the file to call
+            success: function(data) { // on success..
+              var quick_update = jQuery.parseJSON(data);
+                console.log("SUCCESS");
+                console.log(data);
+                console.log(quick_update);
+                document.getElementById(formId).reset();
+                document.getElementById('egg-price'+itemID);
+                var joinEgg = "#egg-price" + itemID
+                $(joinEgg).html(quick_update.get_cart_item_egg+'&nbsp;'+'(Cost: &#8377;&nbsp;'+quick_update.get_cart_item_egg_price+')');
+                $('.modal').modal('hide');
+
+
+            }
+        });
+        return false;
+    });*/

@@ -1,0 +1,56 @@
+{% load staticfiles %}
+        <!-- sidebar: style can be found in sidebar.less -->
+        <section class="sidebar">
+          <!-- Sidebar user panel -->
+          <div class="user-panel">
+            <div class="pull-left image">
+              <img src="http://placehold.it/160x160"/>
+            </div>
+            <div class="pull-left info">
+              {% if request.user.is_authenticated %}
+              <p> {{ request.user }}</p>
+              {% endif %}
+              <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
+            </div>
+          </div>
+          <!-- sidebar menu: : style can be found in sidebar.less -->
+          <ul class="sidebar-menu">
+            <li class="header">MAIN NAVIGATION</li>
+            <li>
+              <a href="{% url 'mybaker_products_list' %}">
+                <i class="fa fa-birthday-cake"></i> <span>Products</span>
+              </a>
+            </li>
+            <li class="treeview">
+              <a href="#">
+                <i class="fa fa-shopping-cart"></i>
+                <span>Sales</span>
+                <i class="fa fa-angle-left pull-right"></i>
+              </a>
+              <ul class="treeview-menu">
+                <li><a href="{% url 'mybaker_orders_list' %}"><i class="fa fa-circle-o"></i>Orders</a></li>
+                <li><a href="{% url 'mybaker_payment_clearance' %}"><i class="fa fa-circle-o"></i>Payment Clearance</a></li>
+                <li><a href="pages/charts/morris.html"><i class="fa fa-circle-o"></i>Reports</a></li>
+              </ul>
+            </li>
+            <li class="treeview">
+              <a href="#">
+                <i class="fa fa-truck"></i>
+                <span>My Cake Box</span>
+                <i class="fa fa-angle-left pull-right"></i>
+              </a>
+            </li>
+            <li class="treeview">
+              <a href="#">
+                <i class="fa fa-life-ring"></i>
+                <span>Help</span>
+                <i class="fa fa-angle-left pull-right"></i>
+              </a>
+              <ul class="treeview-menu">
+                <li><a href="#"><i class="fa fa-circle-o"></i>Documentations</a></li>
+                <li><a href="#"><i class="fa fa-circle-o"></i>Ticket</a></li>
+              </ul>
+            </li>
+          </ul>
+        </section>
+        <!-- /.sidebar -->

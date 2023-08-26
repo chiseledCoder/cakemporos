@@ -1,0 +1,282 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% load staticfiles %}
+
+{% block extracss %}
+<style type="text/css">
+		
+		input[type=number]::-webkit-inner-spin-button, 
+		input[type=number]::-webkit-outer-spin-button { 
+			-webkit-appearance: none;
+			-moz-appearance: none;
+			appearance: none;
+			margin: 0; 
+		}
+		.reviewForm textarea{
+			    resize: none;
+			}
+	</style>
+{% endblock %}
+{% block content %}
+
+<div class="container">
+	<div class="small-padding"></div>
+	{% if messages %}
+          <div class="box-body">
+            <div class="alert alert-success alert-dismissable">
+              <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+              {% for message in messages %}
+                <h4>  <i class="icon fa fa-check"></i>{{ message }}</h4>
+              {% endfor %}
+            </div>
+          </div>
+    {% endif %}
+
+       	<!-- Menu Section -->
+       		<div class="small-padding"></div>
+       		<div class="row">
+       			<div class="col-md-6 col-sm-12">
+					<div class="product-img">
+						<img class="img-responsive" src="/media/{{ MEDIA_URL }}{{ product.image }}" />
+					</div>
+				</div>
+       			<div class="col-md-6 col-sm-12">
+	       			{% if product.baker.veg_or_nonveg == "Vegeterian" %}
+	       				<img src="{% static 'store/image/veg.png' %}" width="30px" height="30px">
+	       			{% endif %}
+	       			<h4>
+	       				
+	       				{{ product }}
+	       			</h4>
+	       			<p class="product_desc">
+	       				{{ product.description }}
+	       			</p>
+	       			<span class="new-weight-price updated-price" style="display: none"></span>
+       				<span class="new-egg-price updated-price" style="display: none"></span><br/>
+       				<a href="#" data-toggle="modal" data-target=""></a>
+	       			<form class='form-horizontal' method='POST' action='{% url "add_to_cart" product.slug %}' enctype="multipart/form-data"> {% csrf_token %}
+	       				{% if weight_variation %}
+	       				<div class="form-group">
+						 	<select class='form-control' name="weight" id="weightSelect" required>
+						 		<option value="" disabled selected>Select Weight Variation</option>
+						 		{% for item in weight_variation %}
+						 		<option data-price="{{ item.price }}" data-product="{{ product }}" value="{{ item }}">{{ item }}</option>
+						 		{% endfor %}
+						 	</select>
+						</div>
+	       				{% endif %}
+	       				{% if egg_variation %}
+	       				<div class="form-group">
+						 	<select class='form-control' id="eggSelect" name="egg_or_eggless" required>
+						 		<option value="" disabled selected>Select Egg or Eggless</option>
+						 		{% for item in egg_variation %}
+						 		<option data-price="{{ item.extra_price }}" value="{{ item }}">{{ item }}</option>
+						 		{% endfor %}
+						 	</select>
+						</div>
+	       				{% endif %}		       			
+	       				<div class="form-group">
+						 	<input  type="text" class="form-control" name="delivery_date" id="deliveryDate" data-date-format="dd/mm/yyyy" placeholder = "Enter Delivery Date" required>
+						</div>
+		       			<div class="form-group">
+						 	<select class="form-control" name="delivery_time" required>
+						 		<option>10 A.M. to 1. P.M.</option>
+						 		<option>2 P.M. to 5. P.M.</option>
+						 		<option>6 P.M. to 9. P.M.</option>
+						 	</select>
+						</div>
+						{% if product_cakes %}
+							<div class="form-group">
+						 		<input  class="form-control"  name='msg_on_cake' type='text' placeholder = "Enter Message on Cake"/>
+							</div>
+						{% endif %}
+		       			
+			       			{% if product_cupcakes %}
+								{% if box_variation %}
+			       				<div class="form-group">
+								 	<select class='form-control' id="boxSelect" name="boxes" required>
+								 		<option value="" disabled selected>Select No. of Box</option>
+								 		{% for item in box_variation %}
+								 		<option value="{{ item }}">{{ item }}</option>
+								 		{% endfor %}
+								 	</select>
+								</div>
+	       						{% endif %}
+							{% else %}
+							<div class="form-group">
+								<div class="input-group">
+							          <span class="input-group-btn">
+							              <button type="button" class="btn btn-cakemporos btn-number" disabled="disabled" data-type="minus" data-field="qty">
+							                  <span class="fa fa-minus"></span>
+							              </button>
+							          </span>
+							          <input type="text" name="qty" class="form-control input-number" {% if product_cupcakes %} value="1" min="1" max="10" {% else %} value="1" min="1" max="3"  {% endif %}>
+							          <span class="input-group-btn">
+							              <button type="button" class="btn btn-cakemporos btn-number" data-type="plus" data-field="qty">
+							                  <span class="fa fa-plus"></span>
+							              </button>
+							          </span>
+							    </div>
+							</div>
+						    {% endif %}
+
+						{% if product_cakes %}
+						<div class="form-group">
+						<label class="label-control">
+							<input type="checkbox" id="photoCakeCheck">&nbsp;Want to add photo to this cake?
+						</label>
+						</div>
+						{% endif %}
+						<div class="form-group" id="photoUploadField" style="display: none;">
+						<p class="warning-note">P.S.: Cake's shape will either be sqaure or rectangle depending upon image and its orientation</p>
+							<label>
+								<input type="file" name="photo_cake_file" id="file-1" class="photoCakeUpload photoCakeUpload-1" data-multiple-caption="{count} files selected"accept="image/*"/>
+								<label for="file-1"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="17" viewBox="0 0 20 17"><path d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"/></svg> <span>Upload Image.<!-- &hellip; --></span></label>
+							</label>
+						</div>
+						<div class="form-group centralize">
+							<button class="btn btn-cakemporos-outline" type="submit"/><i class="fa fa-shopping-cart"></i>
+						 	Add to Cart</button>
+
+						</div>
+		       		</form>
+			</div>
+			 
+       		</div><!-- ENd of Row -->
+       	</div><!-- End of container -->
+{% endblock %}
+{% block extrajs %}
+	<script language="JavaScript" type="text/javascript">
+	$('#eggSelect').on('change', function(){
+		$('.new-egg-price').css('display','block');
+    	var $this = $(this);
+        get_extra_price = $this.find(':selected').data('price');
+        this_value = $this.val();
+   		$('.new-egg-price').html('&#8377; ' + get_extra_price + ' extra for ' + this_value);
+	});
+	$('#weightSelect').on('change', function () {
+		$('.new-weight-price').css('display','block');
+    	var $this = $(this);
+        get_price = $this.find(':selected').data('price');
+        this_value = $this.val();
+   		$('.new-weight-price').html('&#8377; ' + get_price + ' for ' + this_value);
+	});
+	$('#deliveryDate').datepicker({
+    autoclose: true,
+    startDate: Date(),
+	});
+	$('.btn-number').click(function(e){
+    e.preventDefault();
+    
+    fieldName = $(this).attr('data-field');
+    type      = $(this).attr('data-type');
+    var input = $("input[name='"+fieldName+"']");
+    var currentVal = parseInt(input.val());
+    if (!isNaN(currentVal)) {
+        if(type == 'minus') {
+            
+            if(currentVal > input.attr('min')) {
+                input.val(currentVal - 1).change();
+            } 
+            if(parseInt(input.val()) == input.attr('min')) {
+                $(this).attr('disabled', true);
+            }
+
+        } else if(type == 'plus') {
+
+            if(currentVal < input.attr('max')) {
+                input.val(currentVal + 1).change();
+            }
+            if(parseInt(input.val()) == input.attr('max')) {
+                $(this).attr('disabled', true);
+            }
+
+        }
+    } else {
+        input.val(0);
+    }
+});
+$('.input-number').focusin(function(){
+   $(this).data('oldValue', $(this).val());
+});
+$('.input-number').change(function() {
+    
+    minValue =  parseInt($(this).attr('min'));
+    maxValue =  parseInt($(this).attr('max'));
+    valueCurrent = parseInt($(this).val());
+    
+    name = $(this).attr('name');
+    if(valueCurrent >= minValue) {
+        $(".btn-number[data-type='minus'][data-field='"+name+"']").removeAttr('disabled')
+    } else {
+        alert('Sorry, the minimum value was reached');
+        $(this).val($(this).data('oldValue'));
+    }
+    if(valueCurrent <= maxValue) {
+        $(".btn-number[data-type='plus'][data-field='"+name+"']").removeAttr('disabled')
+    } else {
+        alert('Sorry, the maximum value was reached');
+        $(this).val($(this).data('oldValue'));
+    }
+    
+    
+});
+$(".input-number").keydown(function (e) {
+        // Allow: backspace, delete, tab, escape, enter and .
+        if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 190]) !== -1 ||
+             // Allow: Ctrl+A
+            (e.keyCode == 65 && e.ctrlKey === true) || 
+             // Allow: home, end, left, right
+            (e.keyCode >= 35 && e.keyCode <= 39)) {
+                 // let it happen, don't do anything
+                 return;
+        }
+        // Ensure that it is a number and stop the keypress
+        if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+            e.preventDefault();
+        }
+    });
+$('#photoCakeCheck').iCheck({
+    checkboxClass: 'icheckbox_square-yellow',
+    radioClass: 'iradio_square-yellow',
+    increaseArea: '20%' // optional
+  });
+$('#photoCakeCheck').on('ifChecked', function () { 
+	$('#photoUploadField').css('display','block');
+ });
+$('#photoCakeCheck').on('ifUnchecked', function () { 
+	$('#photoUploadField').css('display','none');
+ });
+	</script>
+	<script type="text/javascript">
+		'use strict';
+
+;( function ( document, window, index )
+{
+	var inputs = document.querySelectorAll( '.photoCakeUpload' );
+	Array.prototype.forEach.call( inputs, function( input )
+	{
+		var label	 = input.nextElementSibling,
+			labelVal = label.innerHTML;
+
+		input.addEventListener( 'change', function( e )
+		{
+			var fileName = '';
+			if( this.files && this.files.length > 1 )
+				fileName = ( this.getAttribute( 'data-multiple-caption' ) || '' ).replace( '{count}', this.files.length );
+			else
+				fileName = e.target.value.split( '\\' ).pop();
+
+			if( fileName )
+				label.querySelector( 'span' ).innerHTML = fileName;
+			else
+				label.innerHTML = labelVal;
+		});
+
+		// Firefox bug fix
+		input.addEventListener( 'focus', function(){ input.classList.add( 'has-focus' ); });
+		input.addEventListener( 'blur', function(){ input.classList.remove( 'has-focus' ); });
+	});
+}( document, window, 0 ));
+	</script>
+{% endblock %}

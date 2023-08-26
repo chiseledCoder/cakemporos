@@ -1,0 +1,178 @@
+{% extends 'mydashboard/base.html' %}
+
+{% load staticfiles %}
+{% block content %}
+	<section class="content-header">
+          <h1>
+            {{ baker }}{% if baker.featured %} <i class="fa fa-star fa-1x" style="color:#FFD700;"></i>{% endif %}
+          </h1>
+          <ol class="breadcrumb">
+            <li><a href="../"><i class="fa fa-tachometer"></i> Dashboard</a></li>
+            <li><a href="#"><i class="fa fa-birthday-cake"></i>Baker</a></li>
+          </ol>
+    </section>
+	<section class="content">
+          <div class="row">
+            <div class="col-md-3">
+            <!-- Profile Image -->
+              <div class="box box-primary">
+                <div class="box-body box-profile">
+                  <img class="profile-user-img img-responsive img-circle" src="{% static 'img/myadmin/avatar2.png' %}" alt="User profile picture">
+                  <h3 class="profile-username text-center">{{ baker }}</h3>
+                  <p class="text-muted text-center">Owner: {{ baker.owner_name }}</p>
+
+                  <ul class="list-group list-group-unbordered">
+                    <li class="list-group-item">
+                      <b>Products</b> <a class="pull-right">{{ prod_count }}</a>
+                    </li>
+                    <li class="list-group-item">
+                      <b>Successful Orders</b> <a class="pull-right">{{ success_order_count }}</a>
+                    </li>
+                    <li class="list-group-item">
+                      <b>Failed Orders</b> <a class="pull-right">{{ cancelled_order_count }}</a>
+                    </li>
+                    <li class="list-group-item">
+                      <b>Ratings</b> <a class="pull-right"><span class="label label-danger">4</span></a>
+                    </li>
+                  </ul>
+                  <a href="{% url 'myadmin_baker_update' baker.slug %}" class="btn btn-primary btn-block"><b>Update Baker</b></a>
+                  <a href="{% url 'myadmin_baker_delete' baker.slug %}" class="btn btn-danger btn-block"><b>Delete Baker</b></a>
+                </div><!-- /.box-body -->
+              </div><!-- /.box -->
+              </div>
+            <div class="col-md-9">
+              <div class="nav-tabs-custom">
+                <ul class="nav nav-tabs">
+                  <li class="active"><a href="#owner_details" data-toggle="tab">Owner Details</a></li>
+                  <li><a href="#shop_details" data-toggle="tab">Shop Details</a></li>
+                  <li><a href="#products" data-toggle="tab">Products</a></li>
+                  <li><a href="#orders" data-toggle="tab">Orders</a></li>
+                </ul>
+                <div class="tab-content">
+                  <div class="active tab-pane" id="owner_details">
+                    <!-- Post -->
+                    <div class="">
+<!--                       <div class="user-block">
+                        <img class="img-circle img-bordered-sm" src="../../dist/img/user1-128x128.jpg" alt="user image">
+                        <span class='username'>
+                          <a href="#">Owner's Name</a>
+                          
+                        </span>
+                        <span class='description'>Shared publicly - 7:30 PM today</span>
+                      </div><!/.user-block --> 
+                      
+                      <ul class="list-grouped list-group-unbordered">
+                        <li class="list-group-item">
+                          <b>Owner Name : </b>{{ baker.owner_name }}
+                        </li>
+                        <li class="list-group-item">
+                          <b>Owner Phone: </b>{{ baker.owner_pno }}
+                        </li>
+                        <li class="list-group-item">
+                          <b>Owner Email: </b>{{ baker.owner_email }}
+                        </li>
+                        <li class="list-group-item">
+                          <b>Owner Address: </b>{{ baker.owner_address }}
+                        </li>
+                      </ul>
+                    </div><!-- /.post -->
+                  </div><!-- /.tab-pane -->
+                  <div class="tab-pane" id="shop_details">
+                    <!-- The timeline -->
+                    <ul class="list-grouped list-group-unbordered">
+                        <li class="list-group-item">
+                          <b>Shop Name : </b>{{ baker.shop_name }}
+                        </li>
+                        <li class="list-group-item">
+                          <b>Shop Phone: </b>{% if baker.shop_pno %}
+                            {{ baker.shop_pno }}{% else %} - {% endif %} <!-- If shop number is not available the display "-" -->
+                        </li>
+                        <li class="list-group-item">
+                          <b>Shop Address: </b>{{ baker.shop_address }}
+                        </li>
+                        <li class="list-group-item">
+                          <b>Shop Locality: </b>{{ baker.shop_locality }}
+                        </li>
+                        <li class="list-group-item">
+                          <b>Baker's Shop License Number:</b> {{ baker.shop_license_number }}
+                        </li>
+                        <li class="list-group-item">
+                          <b>MoU Signed On: </b>{{ baker.mou_signed_on }}
+                        </li>
+                        <li class="list-group-item">
+                          <b>Customise Cake Option: </b>{% if baker.customized_cake_option %}
+                            <i class="fa fa-thumbs-up"></i>{% else %} <i class="fa fa-thumbs-down"></i> {% endif %} <!-- If shop number is not available the display "-" -->
+                        </li>
+                      </ul>
+                  </div><!-- /.tab-pane -->
+
+                  <div class="tab-pane" id="products">
+                  <a href="{% url 'myadmin_product_create' %}" class="btn btn-primary">Add New Product</a>
+                    <table class="table table-bordered">
+                      <thead>
+                        <th>#</th>
+                        <th>Product</th>
+                        <th>Category</th>
+                        <th>Price</th>
+                        <th>Action</th>
+                      </thead>
+                      <tbody>
+                      {% for item in product %}
+                        <tr>
+                          <td>
+                            {{ forloop.counter }}
+                          </td>
+                          <td>
+                            {{ item }}
+                          </td>
+                          <td>{{ item.category }}</td>
+                          <td>{{ item.price }}</td>
+                          <td><a href="{% url 'myadmin_product_update' item.slug %}" class="btn btn-primary btn-xs">Update</a> /
+                          <a href="{% url 'myadmin_product_delete' item.slug %}" class="btn btn-danger btn-xs">Delete</a></td>
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div><!-- /.tab-pane -->
+                  <div class="tab-pane" id="orders">
+                    <table class="table table-bordered">
+                      <thead>
+                        <th>#</th>
+                        <th>Order ID</th>
+                        <th>Product</th>
+                        <th>Subcategory</th>
+                        <th>Price</th>
+                        <th>Action</th>
+                      </thead>
+                      <tbody>
+                      {% for item in order %}
+                        <tr>
+                          <td>
+                            {{ forloop.counter }}
+                          </td>
+                          <td>
+                            {{ item }}
+                          </td>
+                          <td>
+                          {% if item.cart %}
+                                {% for objs in item.cart.cartitem_set.all %}
+                                  {{ objs.product }}
+                                {% endfor %}
+                          {% endif %}
+                          </td>
+                          <td></td>
+                          <td>{{ item.final_price }}</td>
+                          
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div><!-- /.tab-pane -->
+                </div><!-- /.tab-content -->
+              </div><!-- /.nav-tabs-custom -->
+            </div><!-- /.col -->
+          </div><!-- /.row -->
+        </section><!-- /.content -->
+      {% endblock %}
+
+

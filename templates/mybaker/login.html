@@ -1,0 +1,52 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Cakemporos | Baker-Log in</title>
+  <!-- Tell the browser to be responsive to screen width -->
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+  <link rel="icon" href="{% static 'store/image/fav.png' %}" type="image/png"/>
+    <link rel="shortcut icon" href="{% static 'store/image/fav.png' %}" type="image/png"/>
+  {% include 'mybaker/all_css.html' %}
+  <style type="text/css">
+  .errorlist li{
+      color: #f26e7c;
+    list-style: none;
+  }
+    </style>
+</head>
+<body class="hold-transition login-page">
+<div class="login-box">
+  <div class="login-logo">
+    <a href="#"><b>Cakemporos</b><br/>Baker Login</a>
+  </div>
+  <!-- /.login-logo -->
+  <div class="login-box-body">
+      <form method='POST' action=''>{% csrf_token %}
+      {% if redirect_field_value %}
+          <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+          {% endif %}
+        {{ form.as_p }}
+
+          <input type="submit" class="btn btn-froly btn-block btn-flat" value="Sign In">
+    </form>
+    <a href="#">Forgot Password?</a><br>
+
+  </div>
+  <!-- /.login-box-body -->
+</div>
+<!-- /.login-box -->
+
+<!-- jQuery 2.2.3 -->
+{% include 'mybaker/all_js.html' %}
+<script>
+  
+  $('input[id=id_username]').addClass('form-control');
+  $('input[id=id_username]').focus();
+  $('input[id=id_username]').attr('id','inputError');
+  $('input[type=password]').addClass('form-control');
+</script>
+</body>
+</html>

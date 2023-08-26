@@ -1,0 +1,6 @@
+<h1>MY ADMIN LOGIN</h1>
+{% load crispy_forms_tags %}
+	<form method="POST" action="dashboard/">{% csrf_token %}
+		{{ form|crispy }}	
+		<input class="btn btn-primary" type="submit" value="Add">
+	</form>

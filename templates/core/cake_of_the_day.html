@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block content %}
+	<div class="wrapper">
+    	<div id="main-content">
+    		<div class="container">
+    			<section>
+	    			<div class="page-title text-center">
+	    				<h3 class="text-cakemporos"><span>C</span>ake <span>O</span>f <span>T</span>he <span>D</span>ay</h3>	
+	    			</div>
+	    		</section>
+	    		<section>
+	    			<div class="text-center small-padding">
+	    				{% for item in cake_of_the_day %}
+	    					<img class="lazy" src="{{ item.cake.image.url }}"/>
+	    					<h5>{{ item.cake }}</h5>
+	    					<p>by</p>
+	    					<h6>{{ item.cake.baker }}</h6>
+	    					<p>Buy this product and get 10% discount.</p>
+	    					<p>Available at these areas only </p>
+	    					<ul>
+	    						{% for locality in item.cake.baker.shop_locality.all %}
+	    							<li>{{ locality }}</li>
+	    						{% endfor %}
+	    					</ul>
+	    				{% endfor %}
+	    				
+	    			</div>
+	    		</section>
+    		</div>
+    	</div>
+    </div>
+{% endblock %}

@@ -1,0 +1,53 @@
+{% load staticfiles %}
+<footer class="footer">
+	<div class="container small-padding">
+		<div class="row centralize">
+		<div class="col-md-4 col-sm-4 col-xs-12">
+				<h5 class="footer-heading">Information</h5>
+				<hr/>
+				<ul class="no-bullets">
+					<li><a href="{% url 'about' %}">About Us</a></li>
+					<li><a href="{% url 'privacy' %}">Privacy Policy</a></li>
+					<li><a href="{% url 'tnc' %}">Terms &amp; Conditions</a></li>
+				</ul>
+			</div>
+			
+			<div class="col-md-4 col-sm-4 col-xs-12">
+				<h5 class="footer-heading">Extra</h5>
+				<hr/>
+				<ul class="no-bullets">
+					<li><a href="{% url 'offers_page' %}">Special Offers</a></li>
+					<li><a href="{% url 'corporate' %}">Corporate Offers</a></li>
+					<li><a href="#">Site Map</a></li>
+				</ul>
+			</div>
+			<div class="col-md-4 col-sm-4 col-xs-12">
+				<h5 class="footer-heading">Customer Service</h5>
+				<hr/>
+				<ul class="no-bullets">
+					<li><a href="{% url 'delivery' %}">Delivery</a></li>
+					<li><a href="{% url 'faq' %}">FAQ</a></li>
+					<li><h5><a href="javascript:void(0)">Call: +91-9766526943</a></h5></li>
+					<li><h5><a href="javascript:void(0)">Email: support@cakemporos.in</a></h5></li>
+					<li>
+						<ul class="no-bullets social-icons">
+							<li>
+								<a href="http://www.facebook.com/cakemporos" target="_blank"><img src="{% static 'store/image/facebook1.png' %}" height="30" width="30" title="Facebook"></a>
+							</li>
+							<li>
+								<a href="http://www.twitter.com/cakemporos" target="_blank"><img src="{% static 'store/image/twitter1.png' %}" height="30" width="30" title="Twitter"></a>
+							</li>
+							<li>
+								<a href="http://www.instagram.com/cakemporos" target="_blank"><img src="{% static 'store/image/instagram1.png' %}" height="30" width="30" title="Instagram"></a>
+							</li>
+						</ul>
+					</li>
+					<li>
+						&copy; Cakemporos 2016-2017
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</footer>
+     

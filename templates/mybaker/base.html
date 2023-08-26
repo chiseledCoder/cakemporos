@@ -1,0 +1,70 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="{% static 'store/image/fav.png' %}" type="image/png"/>
+    <link rel="shortcut icon" href="{% static 'store/image/fav.png' %}" type="image/png"/>
+    <title>Cakemporos | Baker Admin | {{ page_title }}</title>
+    {% include 'mybaker/all_css.html' %}
+    <style type="text/css">
+      form{
+        padding:20px;
+      }
+  </style>
+  {% block extracss %}
+    {% endblock %}
+  </head>
+  <body class="skin-cakemporos sidebar-mini">
+    <div class="wrapper">
+      <header class="main-header">
+      {% include 'mybaker/navbar.html' %}
+      </header>
+      <aside class="main-sidebar">
+       {% include 'mybaker/sidebar.html' %}
+      </aside>
+        <div class="content-wrapper">
+        {% block content %}
+
+        {% endblock %}    
+        {% include 'mybaker/modals.html' %}      
+        </div>
+    </div>
+    {% include 'mybaker/all_js.html' %}
+    <script type="text/javascript">
+      $('form[id^=status_update]').submit(function(e) { // catch the form's submit event
+        var formId = $(this).attr('id');
+        var itemID = formId.substring(13);
+        e.preventDefault();
+        $.ajax({ // create an AJAX call...
+            data: $(this).serialize(), // get the form data
+            type: $(this).attr('method'), // GET or POST
+            url: $(this).attr('action'), // the file to call
+            success: function(data) { // on success..
+              var order_update = jQuery.parseJSON(data);
+              console.log(order_update);
+                document.getElementById(formId).reset();
+                setTimeout(function() {
+                  location.reload();
+                }, 1000);
+            },
+            error: function(data) {
+                setTimeout(function() {
+                  location.reload();
+                }, 1000);
+            }/*  end of error */
+        });
+        return false;
+    });
+    </script>
+    {% block extrajs %}
+    
+    {% endblock %}
+  </body>
+</html>

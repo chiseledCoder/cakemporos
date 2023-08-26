@@ -1,0 +1,43 @@
+{% extends 'mybaker/base.html' %}
+{% load staticfiles %}
+{% block content %}
+<section class="content-header">
+      <h1>
+        Payment Clearance
+      </h1>
+
+      <ol class="breadcrumb">
+        <li><a href="{% url 'mybaker_dashboard' %}"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="{% url 'mybaker_orders_list' %}"> Orders</a></li>
+        <li><a href="#">Payment Clearance</a></li>
+      </ol>
+</section>
+<div class="content">
+  <div class="row">
+    <div class="col-md-6">
+    	<div class="box box-cakemporos">
+    		<div class="box-header">
+    			<h3 class="box-title">
+    				Cleared Payment for last week
+    			</h3>
+    		</div>
+    		<div class="box-body"></div>
+
+
+    	</div>
+    </div><!-- ./col -->
+    <div class="col-md-6">
+    	<div class="box box-cakemporos">
+    		<div class="box-header">
+    			<h3 class="box-title">
+    				Uncleared Payments for this week
+    			</h3>
+    		</div>
+    		<div class="box-body"></div>
+
+
+    	</div>
+    </div><!-- ./col -->
+  </div><!-- /.row -->
+</div><!-- end of content  -->
+{% endblock %}

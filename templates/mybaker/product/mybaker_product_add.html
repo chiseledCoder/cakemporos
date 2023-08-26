@@ -1,0 +1,236 @@
+{% extends 'mybaker/base.html' %}
+{% block content %}
+<section class="content-header">
+      <h1>
+        Products
+        
+        
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="{% url 'mybaker_dashboard' %}"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="#">Catalog</a></li>
+        <li class="{% url 'mybaker_products_list' %}">Product List</li>
+        <li class="active">Add Product</li>
+      </ol>
+    </section>
+<div class="content">
+
+	<div class="box box-default">
+		<div class="box-header">
+			<h3 class="box-title">Add New Product</h3>
+		</div>
+		<div class="box-body">
+		<form method="POST" action='{% url "mybaker_add_new_product" %}'>{% csrf_token %}
+		<div class="row">
+		<div class="col-md-4">
+			<div class="form-group">
+				<select class="form-control" id="product_by_type" name="product_by_type" required="required">
+				<option selected="selected" disabled="disabled">Select Type of Product</option>
+					{% for item in product_type %}
+						<option value="{{ item }}">{{ item }}</option>
+					{% endfor %}
+				</select>
+			</div>
+			<div class="form-group">
+				<select class="form-control" id="product_category" name="product_by_category" required="required">
+				<option selected="selected" disabled="disabled">Select Category</option>
+					{% for item in categories %}
+						<option value="{{ item }}">{{ item }}</option>
+					{% endfor %}
+				</select>
+			</div>
+			<div class="form-group">
+				<input class="form-control" id="product_title" name="product_title" placeholder="Enter Product title" required/>
+			</div>
+			<div class="form-group">
+				<textarea class="form-control" id="product_description" cols="10"rows="4" name="product_description" placeholder="Enter Product Description" required></textarea>
+			</div>
+
+			<div class="form-group">
+				<select class="form-control" id="product_veg_or_nonveg" name="product_veg_or_nonveg" required="required">
+				{% if baker.veg_or_nonveg == "Both" %}
+					<option selected="selected" disabled="disabled">Select Veg Or Non Veg</option>
+					<option value="Both">Both</option>
+					<option value="Only Vegeterian">Only Vegeterian</option>
+					<option value="Only Non-Vegeterian">Only Non-Vegeterian</option>
+				{% elif baker.veg_or_nonveg == "Only Vegeterian" %}
+					<option value="Only Vegeterian" selected="selected">Only Vegeterian</option>
+				{% elif baker.veg_or_nonveg == "Only Non-Vegeterian" %}
+					<option value="Only Non-Vegeterian" selected="selected">Only Non-Vegeterian</option>
+				{% endif %}
+				</select>
+			</div>
+		</div><!-- ./col-md-4 -->
+		<div class="col-md-4">
+		<h4>Egg Or Eggless Variants</h4>
+		<div class="form-group">
+			<select class="form-control" id="egg_or_eggless_variant" name="egg_or_eggless_variant" multiple="multiple">
+				{% if baker.veg_or_nonveg == "Both" %}
+					<option value="Egg">Egg</option>
+					<option value="Eggless">Eggless</option>
+				{% elif baker.veg_or_nonveg == "Only Vegeterian" %}
+					<option value="Eggless" selected="selected">Eggless</option>
+				{% elif baker.veg_or_nonveg == "Only Non-Vegeterian" %}
+					<option value="Egg" selected="selected">Egg</option>
+				{% endif %}	
+			</select>
+		</div>
+		<div class="form-group">
+			<input class="form-control" style="display: none" id="eggEgg" name="egg_or_eggless_price" placeholder="Enter Price for Egg Variant"/>
+		</div>
+		<div class="form-group">
+			<input class="form-control" style="display: none" id="eggEggless" name="eggless_price" placeholder="Enter Price for Eggless Variant"/>
+		</div>
+		<h4 id="weight_variant_title"  style="display: none;"> Weight Variants</h4>
+		<div class="form-group" id="weight_variant_field" style="display: none;">
+			<select class="form-control" id="weight_variant" name="weight_variant" multiple="multiple"style="width: 100%" >
+				<option value="0_5Kg">0.5 Kg</option>
+				<option value="1Kg">1 Kg</option>
+				<option value="1_5Kg">1.5 Kg</option>
+				<option value="2Kg">2 Kg</option>
+			</select>
+		</div>
+		<div class="form-group">
+			<input class="form-control" style="display: none" id="weight0_5Kg" name="weight_05_price" placeholder="Enter Price for 0.5 Kg Variant"/>
+		</div>
+		<div class="form-group">
+			<input class="form-control" style="display: none" id="weight1Kg" name="weight_1_price" placeholder="Enter Price for 1 Kg Variant"/>
+		</div>
+		<div class="form-group">
+			<input class="form-control" style="display: none" id="weight1_5Kg" name="weight_15_price" placeholder="Enter Price for 1.5 Kg Variant"/>
+		</div>
+		<div class="form-group">
+			<input class="form-control" style="display: none" id="weight2Kg" name="weight_2_price" placeholder="Enter Price for 2 Kg Variant"/>
+		</div>
+		<h4 id="box_variant_title"  style="display: none;"> Box Variants</h4>
+		<div class="form-group" id="box_variant_field" style="display: none;">
+			<select class="form-control" id="box_variant" name="box_variant" multiple="multiple"style="width: 100%" >
+				<option value="1_Box">1 Box</option>
+				<option value="2_Box">2 Box</option>
+				<option value="3_Box">3 box</option>
+				<option value="4_Box">4 Box</option>
+				<option value="5_Box">5 Box</option>
+				<option value="6_Box">6 Box</option>
+			</select>
+		</div>
+		<div class="form-group">
+			<input class="form-control" style="display: none" id="box1_Box" name="box_1_price" placeholder="Enter Price for 1 Box"/>
+		</div>
+		<div class="form-group">
+			<input class="form-control" style="display: none" id="box2_Box" name="box_2_price" placeholder="Enter Price for 2 Boxes"/>
+		</div>
+		<div class="form-group">
+			<input class="form-control" style="display: none" id="box3_Box" name="box_3_price" placeholder="Enter Price for 3 Boxes"/>
+		</div>
+		<div class="form-group">
+			<input class="form-control" style="display: none" id="box4_Box" name="box_4_price" placeholder="Enter Price for 4 Boxes"/>
+		</div>
+		<div class="form-group">
+			<input class="form-control" style="display: none" id="box5_Box" name="box_5_price" placeholder="Enter Price for 5 Boxes"/>
+		</div>
+		<div class="form-group">
+			<input class="form-control" style="display: none" id="box6_Box" name="box_6_price" placeholder="Enter Price for 6 Boxes"/>
+		</div>
+	</div><!-- ./col-md-4 -->
+	</div><!-- end of row -->
+	<button class="btn btn-primary" type="submit">Submit</button>
+
+		</form>
+		</div><!-- /.box-body -->
+	</div><!-- /.box -->
+</div><!-- end of content	 -->
+{% endblock %}
+{% block extrajs %}
+<script type="text/javascript">
+	$('#egg_or_eggless_variant').change(function(){
+		var numstr = $(this).val() + "";
+	    var numarr = numstr.split(',');
+	    $('input[id^=egg]').css('display','none');
+	    $('input[id^=egg]').prop('required',false);
+	    $.each(numarr, function(i, val) {
+	        $('input#egg' + val).css('display','block');
+	        $('input#egg' + val).prop('required',true);
+	    });
+	});
+	$('#weight_variant').change(function(){
+		var numstr = $(this).val() + "";
+	    var numarr = numstr.split(',');
+	    $('input[id^=weight]').css('display','none');
+	    $('input[id^=weight]').prop('required',false);
+	    $.each(numarr, function(i, val) {
+	        $('input#weight' + val).css('display','block');
+	        $('input#weight' + val).prop('required',true);
+
+	    });
+	});
+	$('#box_variant').change(function(){
+		var numstr = $(this).val() + "";
+	    var numarr = numstr.split(',');
+	    $('input[id^=box]').css('display','none');
+	    $('input[id^=box]').prop('required',false);
+	    $.each(numarr, function(i, val) {
+	        $('input#box' + val).css('display','block');
+	        $('input#box' + val).prop('required',true);
+	    });
+	});
+	$('#product_by_type').change(function(){
+		var region = $(this).val();
+		if (region == "Cake") {
+			$('#weight_variant_field').css('display','block');
+			$('#weight_variant_title').css('display','block');
+			$('#box_variant_field').css('display','none');
+			$('#box_variant_title').css('display','none');
+			$('input[id^=box]').css('display','none');
+		} else if (region == "Cupcake") {
+			$('#weight_variant_field').css('display','none');
+			$('#weight_variant_title').css('display','none');
+			$('input[id^=weight]').css('display','none');
+			$('#box_variant_field').css('display','block');
+			$('#box_variant_title').css('display','block');
+		}
+	});
+	$(document).ready(function() {
+		$('#egg_or_eggless_variant').select2({
+			placeholder: "Enter Egg or Eggless",
+		});
+		$('#weight_variant').select2({
+			placeholder: "Enter Weight Variant",
+		});
+		$('#box_variant').select2({
+			placeholder: "Enter Box Variants",
+		});
+		/*$('#product_category').select2({
+			placeholder: "Enter Weight Variant",
+		});
+		$('#product_type').select2({
+			placeholder: "Enter Weight Variant",
+		});*/
+		if ($("select[name=egg_or_eggless_variant] option:selected").val() == 'Egg') {
+        		$('input#egg' + 'Egg').css('display','block');
+    	};
+    	if ($("select[name=egg_or_eggless_variant] option:selected").val() == 'Eggless') {
+        		$('input#egg' + 'Eggless').css('display','block');
+    	};
+    	$('#product_type').change(function(){
+		var region = $(this).val();
+		if (region == "Cake") {
+			$('#weight_variant_field').css('display','block');
+			$('#weight_variant_title').css('display','block');
+			$('#box_variant_field').css('display','none');
+			$('#box_variant_title').css('display','none');
+			$('input[id^=box]').css('display','none');
+			$('input[id^=weight]').prop('required',true);
+			$('input[id^=box]').prop('required',false);
+		} else if (region == "Cupcake") {
+			$('#weight_variant_field').css('display','none');
+			$('#weight_variant_title').css('display','none');
+			$('input[id^=weight]').css('display','none');
+			$('input[id^=weight]').prop('required',false);
+			$('input[id^=box]').prop('required',true);
+			$('#box_variant_field').css('display','block');
+			$('#box_variant_title').css('display','block');
+		}
+		});
+	})
+</script>
+{% endblock %}

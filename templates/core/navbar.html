@@ -1,0 +1,47 @@
+<!-- Static navbar -->
+{% load i18n %}
+{% load staticfiles %}
+    <nav class="navbar navbar-default navbar-static-top" >
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <div class="navbar-brand">
+            <a href="{% url 'userindex' %}">
+              <img src="{% static 'store/image/main-logo.png' %}" class="img-reponsive" height="50px"/>
+            </a>
+          </div>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+          <li><a href="{% url 'userindex' %}">Home</a></li>
+          <li><a href="{% url 'offers_page' %}">Offers</a></li>
+          <li></li>
+          
+            {% if request.user.is_authenticated  %}
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="1000" data-close-others="false">Hi, {{ request.user.first_name }}!
+                </a>
+                    <ul class="dropdown-menu">
+                        <!-- <li><a href="#">My Order</a></li> -->
+                        <li><a href="{% url 'user_order_history' %}">My Orders</a></li>
+                         <li><a href="{% url 'reward' %}">My Rewards</a></li>
+                        <!-- <li><a href="#">Reviews</li> -->
+                        <li><a href="{% url 'user_logout' %}">Logout</a></li>
+                    </ul>
+            </li>
+            {% else %}
+            <li><a href="#" data-toggle="modal" data-target="#login-modal">
+                Login
+              </a></li>
+            {% endif %}
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+
+

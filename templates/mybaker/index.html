@@ -1,0 +1,458 @@
+{% extends 'mybaker/base.html' %}
+{% load staticfiles %}
+{% block content %}
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+
+          <h1>
+            Dashboard
+          </h1>
+          <ol class="breadcrumb">
+            <li><a href="#"><i class="fa fa-home" aria-hidden="true"></i> Home</a></li>
+          </ol>
+          
+        </section>
+        <section class="content">
+          <div class="row">
+            <div class="col-lg-3 col-xs-6">
+              <!-- small box -->
+              <div class="small-box bg-purple">
+                <div class="inner">
+                  <h3>{{ get_products_count }}</h3>
+                  <p>Total Products</p>
+                </div>
+                <div class="icon">
+                  <i class="fa fa-birthday-cake" aria-hidden="true"></i>
+                </div>
+                <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right" aria-hidden="true"></i></a>
+              </div>
+            </div><!-- ./col -->
+            <div class="col-lg-3 col-xs-6">
+              <!-- small box -->
+              <div class="small-box bg-maroon">
+                <div class="inner">
+                  <h3>{{ get_orders_count }}</h3>
+                  <p>Total Orders</p>
+                </div>
+                <div class="icon">
+                  <i class="fa fa-shopping-cart" aria-hidden="true"></i>
+                </div>
+                <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right" aria-hidden="true"></i></a>
+              </div>
+            </div><!-- ./col -->
+            <div class="col-lg-3 col-xs-6">
+              <!-- small box -->
+              <div class="small-box bg-orange">
+                <div class="inner">
+                  <h3>{{ sales_total|floatformat:"0" }}</h3>
+                  <p>Total Sales (Last 7 days)</p>
+                </div>
+                <div class="icon">
+                  <i class="fa fa-inr" aria-hidden="true"></i>
+                </div>
+                <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right" aria-hidden="true"></i></a>
+              </div>
+            </div><!-- ./col -->
+            <div class="col-lg-3 col-xs-6">
+              <!-- small box -->
+              <div class="small-box bg-olive">
+                <div class="inner">
+                  <h3>{{ happy_customers }}</h3>
+                  <p>Happy Customers</p>
+                </div>
+                <div class="icon">
+                  <i class="fa fa-smile-o" aria-hidden="true"></i>
+                </div>
+                <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right" aria-hidden="true"></i></a>
+              </div>
+            </div><!-- ./col -->
+          </div><!-- /.row -->
+          <!-- Main row -->   
+          <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+              <div class="box box-danger">
+                <div class="box-header with-border">
+                  <i class="fa fa-cart-arrow-down" aria-hidden="true"></i>
+                  <h3 class="box-title">Recent Order Status</h3>
+                <div class="box-btn-tools pull-right">
+                <button class="btn btn-box-tool" type="button" data-widget="collapse">
+                  <i class="fa fa-minus" aria-hidden="true"></i>
+                </button>
+                  
+                </div>
+                </div><!-- ./ box-header -->
+                <div class="box-body  table-responsive ">
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th>Order ID</th>
+                        <th>Order Date</th>
+                        <th>User</th>
+                        <th>Product</th>
+                        <th>Amount</th>
+                        <th>Order Status</th>
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in get_orders|slice:":5" %}
+                            <tr>
+                              <td>{{ item }}
+                              </td>
+                              <td>
+                                {{ item.order_date|date:"D, d/m/Y" }}                              
+                              <td>
+                                {{ item.user.get_full_name }}
+                              </td>
+                              <td>
+                                {{ item.cartitem.product }}                                
+                              </td>
+                              </td>
+                              <td>
+                                &#8377;&nbsp;{{ item.sub_total }}
+                              </td>
+                              <td>
+                                {% if item.status == "Pending" %}
+                                <h5><span class="label label-default">{{ item.status }}</span></h5>
+                              {% elif item.status == "Confirmed" %}
+                                <h5><span class="label label-primary">{{ item.status }}</span></h5>
+                              {% elif item.status == "Shipped" %}
+                                <h5><span class="label label-info">{{ item.status }}</span></h5>
+                              {% elif item.status == "Complete" %}
+                                <h5><span class="label label-success">{{ item.status }}</span></h5>
+                              {% elif item.status == "Cancelled" %}
+                                <h5><span class="label label-danger">{{ item.status }}</span></h5>
+                              {% elif item.status == "Baking" %}
+                                <h5><span class="label label-warning">{{ item.status }}</span></h5>
+                              {% elif item.status == "Ready" %}
+                                <h5><span class="label bg-purple">{{ item.status }}</span></h5>
+                              {% endif %}
+                              </td>
+                              <td><a href="{% url 'mybaker_order_detail' item %}"> View </a></td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+                <div class="box-footer">
+
+                  <a href="{% url 'mybaker_orders_list' %}" class="btn btn-danger pull-right">View All</a>
+                </div>
+              </div><!-- ./box -->
+            </div><!-- ./col -->
+          </div> <!-- ./row -->
+          <div class="row">
+            <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+              <div class="box box-warning">
+                <div class="box-header with-border">
+                  <i class="fa fa-birthday-cake" aria-hidden="true"></i>
+                  <h3 class="box-title">Recent Products</h3>
+                <div class="box-btn-tools pull-right">
+                <button class="btn btn-box-tool" type="button" data-widget="collapse">
+                  <i class="fa fa-minus" aria-hidden="true"></i>
+                </button>
+                  
+                </div>
+                </div><!-- ./box-header -->
+                <div class="box-body">
+                <ul class="products-list product-list-in-box">
+                  {% for item in get_products|slice:":5" %}
+                  <li class="item">
+                    <div class="product-img">
+                      <img src="{{ item.image.url }}" height="100px" width="100px" alt="{{ item }} image">
+                    </div>
+                    <div class="product-info">
+                      <a href="javascript:void(0)" class="product-title text-warning">{{ item }}
+                        {% if item.status == "Enabled" %}
+                          <span class="label label-success pull-right">{{ item.status }}</span>
+                                {% elif item.status == "Disabled" %}
+                          <span class="label label-danger pull-right">{{ item.status }}</span>
+                        {% endif %}
+                      </a>
+                          <span class="product-description">
+                            {{ item.description }}
+                          </span>
+                    </div>
+                  </li>
+                  {% endfor %}
+                </ul>
+                </div><!-- ./box-body -->
+                <div class="box-footer">
+                  <a href="{% url 'mybaker_products_list' %}" class="btn btn-warning pull-right">View All</a>
+                </div><!-- ./box-footer -->
+              </div>
+            </div><!-- ./col -->
+            <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+              <div class="box box-info">
+                <div class="box-header with-border">
+                  <i class="fa fa-cube" aria-hidden="true"></i>
+                  <h3 class="box-title">Top Selling Products</h3>
+                  
+                <div class="box-btn-tools pull-right">
+                <button class="btn btn-box-tool" type="button" data-widget="collapse">
+                  <i class="fa fa-minus" aria-hidden="true"></i>
+                </button>
+                  
+                </div>
+                </div><!-- ./box-header -->
+                <div class="box-body">
+                <ul class="products-list product-list-in-box">
+                  {% for item in baker_product_order_count|slice:"5" %}
+                  <li class="item">
+                    <div class="product-img">
+                      <img src="{{ MEDIA_URL }}../{{ item.cartitem__product__image }}" height="100px" width="100px" alt="{{ item.cartitem__product__title }} image">
+                    </div>
+                    <div class="product-info">
+                      <a href="javascript:void(0)" class="product-title text-info">{{ item.cartitem__product__title }}
+                      <h4 class="pull-right">
+                        <span class="label label-info" data-toggle="tooltip" title="Order Count" data-placement="left">
+                          {{ item.cartitem__product__count }}
+                        </span>
+                      </h4>
+                      </a>
+                      <span class="product-description">
+                          Product Liked by {{ item.cartitem__product__rating_count }} people(s)
+                      </span>
+                    </div>
+                  </li>
+                  {% endfor %}
+                </ul>
+                </div><!-- ./box-body -->
+              </div>
+            </div><!-- ./col -->
+            <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+              <div class="box box-primary">
+                <div class="box-header with-border ">
+                  <i class="fa fa-user" aria-hidden="true"></i>
+                  <h3 class="box-title">Top Customers</h3>
+                <div class="box-btn-tools pull-right">
+                <button class="btn btn-box-tool" type="button" data-widget="collapse">
+                  <i class="fa fa-minus" aria-hidden="true"></i>
+                </button>
+                  
+                </div>
+                </div><!-- ./box-header -->
+                <div class="box-body">
+                  <ul class="products-list product-list-in-box">
+                  {% for item in baker_user_order_count|slice:"5" %}
+                  <li class="item">
+                    <div class="product-img">
+                      <i class="fa fa-user-circle-o fa-4x" aria-hidden="true"></i>
+                    </div>
+                    <div class="product-info" style="margin-left:0px">
+                      <a href="javascript:void(0)" class="product-title text-primary">{{ item.user__first_name }}&nbsp;{{ item.user__last_name }}
+                      <h4 class="pull-right">
+                          <span class="label label-primary" data-toggle="tooltip" title="Total Orders" data-placement="left">
+                            {{ item.user__count }}
+                          </span>
+                        </h4>
+                      </a>
+                        
+                    </div>
+                  </li>
+                  {% endfor %}
+                </ul>
+                </div><!-- ./box-body -->
+              </div><!-- ./box -->
+
+            </div>
+          </div><!-- ./row -->
+          <div class="row">
+            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6">
+              <div class="info-box">
+            <span class="info-box-icon bg-red"><i class="fa fa-money"></i></span>
+
+            <div class="info-box-content">
+              <span class="info-box-text">Total Payment Cleared</span>
+              <span class="info-box-number">41,410</span>
+            </div>
+            <!-- /.info-box-content -->
+          </div>
+          <!-- /.info-box -->
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6">
+            <div class="info-box">
+            <span class="info-box-icon bg-red"><i class="fa fa-google-plus"></i></span>
+
+            <div class="info-box-content">
+              <span class="info-box-text">Total Payment Uncleared</span>
+              <span class="info-box-number">41,410</span>
+            </div>
+            <!-- /.info-box-content -->
+          </div>
+          <!-- /.info-box -->
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+              <div class="box box-cakemporos">
+                  <div class="box-header with-border">
+                    <i class="fa fa-line-chart" aria-hidden="true"></i>
+                    <h3 class="box-title">Order's in Last 7 Days</h3>
+                  <div class="box-btn-tools pull-right">
+                  <button class="btn btn-box-tool" type="button" data-widget="collapse">
+                    <i class="fa fa-minus" aria-hidden="true"></i>
+                  </button>
+                    
+                  </div>
+                  </div><!-- ./box-header -->
+                  <div class="box-body">
+                    <div class="chart">
+                     <div id="sales-line-chart" style="height:250px"></div>
+                    </div>
+                  </div><!-- ./box-body -->
+              </div><!-- ./box -->
+            </div><!-- ./col -->
+            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+              <div class="box box-success">
+                  <div class="box-header with-border">
+                    <i class="fa fa-pie-chart" aria-hidden="true"></i>
+                    <h3 class="box-title">Order Status For Last 7 Days</h3>
+                    <div class="box-tools pull-right">
+                      <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                        <i class="fa fa-minus" aria-hidden="true"></i>
+                      </button>
+                    </div>
+                  </div><!-- ./box-header -->
+                  <div class="box-body">
+                    <div class="chart">
+                      <div id="order-status-pie" style="height:250px"></div>
+                    </div>
+                  </div>
+              </div><!-- ./box -->
+            </div><!-- ./col -->
+          </div><!-- ./row -->
+
+        </section><!-- /.content -->  
+        
+
+{% endblock %}
+
+{% block extrajs %}
+<!-- HIghchartcharts -->
+  <script src="https://code.highcharts.com/highcharts.js"></script>
+<!-- <script src="https://code.highcharts.com/modules/exporting.js"></script> -->
+ <script type="text/javascript">
+ /*Welcome Notify*/
+     {% if messages %}
+     $.notify({
+      icon: 'fa fa-star',
+      message: '{% for message in messages %}{{ message }}{% endfor %}'
+    },{
+      type: 'success',
+      animate: {
+        enter: 'animated bounceInDown',
+        exit: 'animated bounceOutUp'
+      }
+    });
+     {% endif %}
+  /* ./ Welcome Notify*/
+
+  /*Charts*/
+  /*LINE CHART*/
+  
+ $(function () {
+    $('#sales-line-chart').highcharts({
+        chart: {
+            type: 'area'
+        },
+        title: {
+            text: '',
+            x: -20 //center
+        },
+        xAxis: {
+            categories: [{% for item in sorted_order_count %}
+                     '{{ item.order_date|date:"d/m" }}',
+                  {% endfor %}]
+        },
+        yAxis: {
+            title: {
+                text: 'No. of Orders'
+            },
+            plotLines: [{
+                value: 0,
+                width: 1,
+                color: '#808080'
+            }]
+        },
+        legend: {
+            layout: 'vertical',
+            align: 'right',
+            verticalAlign: 'middle',
+            borderWidth: 0
+        },
+        series: [{
+            name: 'Count',
+            color: '#f26e7c',
+            data: [{% for item in sorted_order_count %}
+                    {{ item.count }},
+                  {% endfor %}
+                  ]
+        },]
+    });
+});
+ $(function () {
+    $('#order-status-pie').highcharts({
+        chart: {
+            plotBackgroundColor: null,
+            plotBorderWidth: null,
+            plotShadow: false,
+            type: 'pie'
+        },
+        title: {
+            text: ''
+        },
+        plotOptions: {
+            pie: {
+                allowPointSelect: true,
+                cursor: 'pointer',
+                dataLabels: {
+                    enabled: false,
+                    format: '<b>{point.name}</b>: {point}',
+                    style: {
+                        color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                    }
+                }
+            }
+        },
+        series: [{
+            name: 'Total',
+            colorByPoint: true,
+            data: [{
+                name: 'Pending',
+                y: {{ final_pending_count }},
+                color:'#D2D6DE'
+            }, 
+            {
+                name: 'Confirmed',
+                y: {{ final_confirmed_count }},
+                color:'#00C0EF'
+            },
+             {
+                name: 'Complete',
+                y: {{ final_complete_count }},
+                sliced: true,
+                selected: true
+            }, 
+            {
+                name: 'Ready',
+                y: {{ final_ready_count }},
+                color:'#00A65A'
+            }, 
+            {
+                name: 'Cancelled',
+                y: {{ final_cancelled_count }},
+                color:'#F56954'
+            },
+            {
+                name: 'Baking',
+                y: {{ final_baking_count }},
+                color:'#F39C12',
+            },]
+        }]
+    });
+});
+    
+</script>
+
+{% endblock %}

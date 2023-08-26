@@ -1,0 +1,38 @@
+{% extends "account/base.html" %}
+
+{% load i18n %}
+
+{% block head_title %}{% trans "Signup" %}{% endblock %}
+
+{% block content %}
+	<div class="container">
+		<div class="row centralize">
+			<div class="col-md-4 col-sm-6 col-xs-12 col-md-offset-4 col-sm-offset-3">
+			<h1>{% trans "Sign Up" %}</h1>
+        <form class="signup" id="signup_form" method="post" action="{% url 'account_signup' %}">
+          {% csrf_token %}
+            {{ form.non_field_errors }}
+            <input autofocus="autofocus" class="form-control" id="id_username" name="username" placeholder="Username" type="text">
+			{{ form.username.errors }}
+            <br>
+            <input id="id_password1" class="form-control" name="password1" placeholder="Password" type="password">
+            {{ form.password1.errors }}
+            <br>
+            <input id="id_password2" class="form-control" name="password2" placeholder="Password (again)" type="password">
+            {{ form.password2.errors }}
+            <br>
+            <input id="id_email" class="form-control" name="email" type="email" placeholder="email@address.com"> {{ form.email.errors }}
+            <br><br>
+          {% if redirect_field_value %}
+          <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+          {% endif %}
+          <button class="btn" type="submit">{% trans "Sign Up" %} &raquo;</button>
+        </form>
+        <div class="footnote">
+            Already have an account? <a href="{{ login_url }}">sign in</a>
+        </div>
+			</div><!-- ./col -->
+		</div><!-- ./row -->
+	</div><!--./container  -->
+
+{% endblock %}

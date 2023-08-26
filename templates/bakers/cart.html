@@ -1,0 +1,12 @@
+{% for item in cart.cartitem_set.all %}
+                      <tr>
+                        <td>{{ item.product }} <span><br/><span class="text-lowercase">by</span> {{ item.product.baker }}</span></td>
+                        <td id="item_total{{ item.product.slug }}{{ item.product.id }}">&#8377;{{ item.cart_item_total }}</td>
+                        <td style="text-align:center">
+                          <a href="#" data-toggle="modal" data-target="#{{ item.id }}"><i class="fa fa-pencil"></i></a>| 
+                          <a href="{% url 'quick_remove_from_cart' item.id %}" id="remove-item{{ item.id }}">
+                            <i class="fa fa-times"></i>
+                          </a>
+                        </td>
+                      </tr>  
+                    {% endfor %}
